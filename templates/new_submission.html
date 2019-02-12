@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+{% extends 'base.html' %}
+
+{% block title %}Travel!{% endblock %}
+
+{% block content %}
+
+    <p>Submit your travel URL here!</p>
+
+    <body>
+
+<form action="/my-map" method="post">
+<!-- ECF: IS THIS ACTION ROUTE RIGHT? -->
+    Attraction URL <input type="text" name="url"><br>
+    <!--  ECF: MAKE THIS A BETTER NAME -->
+    Recommended by <input type="text" name="recommended_by"><br>
+    <input type="hidden" name="datestamp" value="3487">
+    <input type="submit">
+
+</form>
+
+</body>
+
+{% endblock %}
+
+
+</html>
