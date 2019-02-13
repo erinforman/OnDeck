@@ -4,6 +4,7 @@ import os
 import requests
 from flask import Flask, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
+from model import User, Location, Attraction
 
 app = Flask(__name__)
 app.secret_key = "SECRETSECRETSECRET"
@@ -19,29 +20,57 @@ GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 # GOOGLE_URL_5 = <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key="+GOOGLE_KEY+"&libraries=places"></script>
 # #<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 
-@app.route("/")
-def homepage():
-    """Show homepage."""
-    #EF: include log in screen!
+@app.route('/')
+def login():
+    """Show homepage and login form."""
 
-    return render_template("homepage.html")
+    return render_template('homepage.html')
 
-@app.route("/new-user")
+@app.route('/', methods=['POST'])
+def check_valid_login():
+    """Check if login info is valid"""
+
+    email=request.form["email"]
+    password=request.form["password"]
+    user=USER.query.filter_by(email=email).first()
+
+    """email address not found in db"""
+    if not user:
+        flash("We don't recognize that e-mail address. New user? Register!")
+        return redirect('/')
+
+    """email address found in db but pw doesn't match""" 
+    if password != user.password:
+        flash('Incorrect password')
+        return redirect("/login")
+
+    """valid login"""
+    session["user_id"] = user.user_id
+    flash("Logged in")
+    return redirect(f"/new-submission/{user.user_id}")
+
+    return render_template('homepage.html')
+
+@app.route('/login')
 def new_user():
-
     pass
 
-@app.route("/new-submission")
+@app.route('/new-user')
+def new_user():
+    pass
+
+
+@app.route('/new-submission/<int:user_id>')
 def new_submission():
     """Show form submission page."""
     
-    return render_template("new_submission.html")
+    return render_template('new_submission.html')
 
-@app.route("/my-map", methods=["POST"])
+@app.route('/my-map', methods=['POST'])
 def my_map():
     """Show homepage."""
     pass
-    return render_template("my_map.html")
+    return render_template('my_map.html')
 
 
 if __name__ == "__main__":
