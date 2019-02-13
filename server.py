@@ -26,6 +26,11 @@ def homepage():
 
     return render_template("homepage.html")
 
+@app.route("/new-user")
+def new_user():
+
+    pass
+
 @app.route("/new-submission")
 def new_submission():
     """Show form submission page."""

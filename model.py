@@ -1,6 +1,9 @@
 """Models and database functions for HB Final Travel Project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
+from sqlalchemy_utils import database_exists, create_database, drop_database
+import sys
 
 db = SQLAlchemy()
 
@@ -33,7 +36,7 @@ class Location(db.Model):
 
     place_id = db.Column(db.String(64), primary_key=True) #corresponds to place_id in google API
     formatted_address = db.Column(db.String(200), nullable=False)
-    street_number = db.Column(db.Integer(10), nullable=False)
+    street_number = db.Column(db.Integer, nullable=False)
     street_name = db.Column(db.String(64), nullable=False) #google route
     city = db.Column(db.String(64), nullable=False) #locality
     state = db.Column(db.String(64), nullable=False) #administrative_area_level_1
@@ -56,10 +59,10 @@ class Attraction(db.Model):
     attraction_id = db.Column(db.Integer, autoincrement=True, primary_key=True) 
     #generated when a user adds a link to an attraction to their map
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    place_id = db.Column(db.Integer, db.ForeignKey('locations.place_id'))
+    place_id = db.Column(db.String(64), db.ForeignKey('locations.place_id'))
     url = db.Column(db.String(200), nullable=False) 
     recommended_by = db.Column(db.String(100), nullable=True) 
-    date_stamp = db.Column(db.DateTime, nullable=False) 
+    date_stamp = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
 
@@ -67,13 +70,30 @@ class Attraction(db.Model):
         place_id={self.place_id} url={self.url} recommend_by={self.recommend_by} \
         date_stamp={self.date_stamp}>"
 
-
 ##############################################################################
 # Helper functions
+def create_db(app):
+
+    if len (sys.argv) == 2 and int(sys.argv[1]) == 1:
+        """if the file name is passed with a parameter
+        and that paramter is 1, drop the db if it exists.
+        create and seed db."""
+
+        db_name = 'maps'
+
+        if database_exists('postgresql:///'+db_name):
+            drop_database('postgresql:///'+db_name)
+        
+        create_database('postgresql:///'+db_name)
+        db.create_all(app=app)
+
+    else:
+        pass
+
 def connect_to_db(app):
     """Connect the database to Flask app."""
 
-    # Configure to use maps PostgreSQL database
+    # Configure to use maps PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///maps'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
@@ -84,4 +104,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    create_db(app)
     print("Connected to DB.")

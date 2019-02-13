@@ -6,7 +6,17 @@
 
 {% block content %}
 
-    <p>Login here! Eventually! Real soon!</p>
+
+<h1>Login</h1>
+    <form action="/new-submission" method="POST">
+        Email: <input type="email" name="email" required>
+        <br>
+        Password: <input type="password" name="password" required>
+        <input type="submit" value="Log In">
+        <br>
+        <a href="/new-user">New user? Create an account.</a>
+
+
 
 
 {% endblock %}
@@ -14,3 +24,4 @@
 
 
 </html>
+
