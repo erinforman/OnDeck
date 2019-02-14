@@ -1,10 +1,11 @@
+
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 
 from model import User, connect_to_db, db
-from server import app
 
+#TODO: PULL FROM EXISTING DB AND ADD TO SEED BEFORE DROPPING AND RE-SEEDING
 
 def create_db():
 
@@ -25,10 +26,14 @@ def create_users():
 
     db.session.add_all([ross, joey, monica])
     db.session.commit()
+    print("Added Users.")
 
 
 if __name__ == "__main__":
+
+    from server import app
     create_db()
     connect_to_db(app)
     db.create_all()
+    print("Connected to DB.")
     create_users()

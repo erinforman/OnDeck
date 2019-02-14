@@ -2,10 +2,12 @@ from pprint import pformat
 import os
 
 import requests
+
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Location, Attraction
+from location_search import search_raw_url_location
 
 app = Flask(__name__)
 
@@ -21,7 +23,7 @@ GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 # #<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 
 @app.route('/')
-def login():
+def submit_login():
     """Show homepage and login form."""
 
     return render_template('homepage.html')
@@ -51,12 +53,19 @@ def check_valid_login():
     return redirect(f"/my-map/{user.user_id}")
 
 @app.route('/my-map/<int:user_id>')
-def my_map(user_id):
+def submit_new_attraction(user_id):
     """Show main user landing page with submission form and map."""
-    user = User.query.options(db.joinedload('locations').joinedload('attractions')).get(user_id)
+    user = User.query.options(db.joinedload('attractions').joinedload('location')).get(user_id)
     
     return render_template('my_map.html', user=user)
 
+@app.route('/my-map/<int:user_id>', methods=['POST'])
+def find_attraction_location(user_id):
+
+    url = request.form["url"]
+    result = search_raw_url_location(url)
+
+    return render_template('location_search_results.html', result=result)
 
 # @app.route('/login')
 # def login():

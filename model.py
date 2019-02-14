@@ -2,7 +2,6 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-from sqlalchemy_utils import database_exists, create_database, drop_database
 import sys
 
 db = SQLAlchemy()
@@ -77,7 +76,6 @@ class Attraction(db.Model):
 # Helper functions
 def connect_to_db(app):
     """Connect the database to Flask app."""
-    # Configure to use maps PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///maps'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
@@ -88,4 +86,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
     print("Connected to DB.")

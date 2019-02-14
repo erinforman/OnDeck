@@ -10,17 +10,14 @@
 
     <body>
 
-<form action="/my-map" method="post">
-<!-- ECF: IS THIS ACTION ROUTE RIGHT? -->
+<form action="/my-map/{{ user.user_id }}" method="post">
+<!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
     Attraction URL <input type="text" name="url"><br>
-    <!--  ECF: MAKE THIS A BETTER NAME -->
+    <!--  TODO: MAKE THIS A BETTER NAME -->
     Recommended by <input type="text" name="recommended_by"><br>
     <input type="submit">
 
 </form>
-
-
-<p>{{ user.email }} ({{ user.user_id }})</p>
 
 </body>
 
