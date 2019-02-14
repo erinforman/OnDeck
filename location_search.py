@@ -1,5 +1,6 @@
 import googlemaps
 import os
+from collections import namedtuple
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
@@ -9,11 +10,12 @@ def search_raw_url_location(url):
     """find a location for the raw url submission"""
 
     location = gmaps.geocode(address=url)
+    Search = namedtuple('Search',['location', 'match_type'])
 
     if len(location) == 0:
 
         match_type = 'no_match'
-        location_dict = None
+        location_dict = 'no_results'
 
     elif len(location) == 1:
         #if 1 location was returned for the search
@@ -29,7 +31,7 @@ def search_raw_url_location(url):
         location_dict = location
         match_type = 'multi'
 
-    return [location_dict, match_type]
+    return Search(location_dict, match_type)
 
 # def exact_match_location(location):
 
