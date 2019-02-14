@@ -2,15 +2,15 @@ from pprint import pformat
 import os
 
 import requests
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
-from model import User, Location, Attraction
+
+from model import connect_to_db, db, User, Location, Attraction
 
 app = Flask(__name__)
-app.secret_key = "SECRETSECRETSECRET"
 
 
-
+app.secret_key = os.environ.get('APP_KEY')
 GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 
 # GOOGLE_URL_1 = "https://maps.googleapis.com/maps/api/js?key="+GOOGLE_KEY+"&callback=initMap"
@@ -32,7 +32,7 @@ def check_valid_login():
 
     email=request.form["email"]
     password=request.form["password"]
-    user=USER.query.filter_by(email=email).first()
+    user=User.query.filter(User.email==email).first()
 
     """email address not found in db"""
     if not user:
@@ -42,40 +42,44 @@ def check_valid_login():
     """email address found in db but pw doesn't match""" 
     if password != user.password:
         flash('Incorrect password')
-        return redirect("/login")
+        return redirect('/')
 
     """valid login"""
     session["user_id"] = user.user_id
     flash("Logged in")
-    return redirect(f"/new-submission/{user.user_id}")
 
-    return render_template('homepage.html')
+    return redirect(f"/my-map/{user.user_id}")
 
-@app.route('/login')
-def new_user():
-    pass
-
-@app.route('/new-user')
-def new_user():
-    pass
-
-
-@app.route('/new-submission/<int:user_id>')
-def new_submission():
-    """Show form submission page."""
+@app.route('/my-map/<int:user_id>')
+def my_map(user_id):
+    """Show main user landing page with submission form and map."""
+    user = User.query.options(db.joinedload('locations').joinedload('attractions')).get(user_id)
     
-    return render_template('new_submission.html')
+    return render_template('my_map.html', user=user)
 
-@app.route('/my-map', methods=['POST'])
-def my_map():
-    """Show homepage."""
-    pass
-    return render_template('my_map.html')
+
+# @app.route('/login')
+# def login():
+#     pass
+
+# @app.route('/new-user')
+# def new_user():
+#     pass
+
+#     #TODO: add flow for adding a new user
+
+
+# @app.route('/new-submission/<int:user_id>')
+# def new_submission():
+#     """Show form submission page."""
+    
+#     return render_template('new_submission.html')
 
 
 if __name__ == "__main__":
     app.debug = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+    connect_to_db(app)
     DebugToolbarExtension(app)
     os.system("source secrets.sh") #applies API key to environ at run time
     app.run(host="0.0.0.0")
