@@ -33,19 +33,18 @@ class Location(db.Model):
 
     place_id = db.Column(db.String(64), primary_key=True) #corresponds to place_id in google API
     formatted_address = db.Column(db.String(200), nullable=False)
-    street_number = db.Column(db.Integer, nullable=False)
-    street_name = db.Column(db.String(64), nullable=False) #google route
-    city = db.Column(db.String(64), nullable=False) #locality
-    state = db.Column(db.String(64), nullable=False) #administrative_area_level_1
-    country = db.Column(db.String(64), nullable=False) #country short name
+    #street_number = db.Column(db.Integer, nullable=False)
+    #street_name = db.Column(db.String(64), nullable=False) #google route
+    #city = db.Column(db.String(64), nullable=False) #locality
+    #state = db.Column(db.String(64), nullable=False) #administrative_area_level_1
+    #country = db.Column(db.String(64), nullable=False) #country short name
     lat = db.Column(db.Float, nullable=False) #geometry location
     lng = db.Column(db.Float, nullable=False) #geometry location
 
     def __repr__(self):
 
         return f"<Location place_id={self.place_id} formatted_address={self.formatted_address} \
-        street_number={self.street_number} street_name={self.street_name} city={self.city} \
-        state={self.state} country={self.country} lat={self.lat} lng={self.lng}>"
+                lat={self.lat} lng={self.lng}>"
 
 
 class Attraction(db.Model):
@@ -69,7 +68,7 @@ class Attraction(db.Model):
     def __repr__(self):
 
         return f"<Attraction attraction_id={self.attraction_id} user_id={self.user_id} \
-        place_id={self.place_id} url={self.url} recommend_by={self.recommend_by} \
+        place_id={self.place_id} url={self.url} recommended_by={self.recommended_by} \
         date_stamp={self.date_stamp}>"
 
 ##############################################################################

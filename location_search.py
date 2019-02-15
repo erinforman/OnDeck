@@ -33,6 +33,19 @@ def search_raw_url_location(url):
 
     return Search(location_dict, match_type)
 
+#result.location
+#x = {'address_components': [{'long_name': "Martha's Vineyard", 'short_name': "Martha's Vineyard", 'types': ['establishment', 'natural_feature']}, {'long_name': 'Dukes County', 'short_name': 'Dukes County', 'types': ['administrative_area_level_2', 'political']}, {'long_name': 'Massachusetts', 'short_name': 'MA', 'types': ['administrative_area_level_1', 'political']}, {'long_name': 'United States', 'short_name': 'US', 'types': ['country', 'political']}], 'formatted_address': "Martha's Vineyard, Massachusetts, USA", 'geometry': {'bounds': {'northeast': {'lat': 41.4830865, 'lng': -70.4666525}, 'southwest': {'lat': 41.3013385, 'lng': -70.8384908}}, 'location': {'lat': 41.3804981, 'lng': -70.645473}, 'location_type': 'APPROXIMATE', 'viewport': {'northeast': {'lat': 41.4830865, 'lng': -70.4666525}, 'southwest': {'lat': 41.3013385, 'lng': -70.8384908}}}, 'place_id': 'ChIJOxU0AIkl5YkRQ7y05Pwt1_U', 'types': ['establishment', 'natural_feature']}
+def parse_exact_match_results(location_dict):
+
+    #add check on if match type is exact? create a class where function can only act on exacts?
+    place_id = location_dict['place_id']
+    formatted_address = location_dict['formatted_address']
+    lat = location_dict.get('geometry')['location']['lat']
+    lng = location_dict.get('geometry')['location']['lng']
+
+    return(place_id, formatted_address, lat, lng)
+
+
 # def exact_match_location(location):
 
 # raw = search_raw_url_location(url) 

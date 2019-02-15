@@ -15,7 +15,7 @@ def create_db():
         drop_database('postgresql:///'+db_name)
 
     create_database('postgresql:///'+db_name)
-    
+ 
 def create_users():
 
     ross = User(fname="Ross", lname='Geller', email="ross@test.com", password=1)
@@ -30,7 +30,7 @@ def create_users():
 
 
 if __name__ == "__main__":
-
+    
     from server import app
     create_db()
     connect_to_db(app)

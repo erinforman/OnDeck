@@ -6,20 +6,20 @@
 
 {% block content %}
 
-    <p>Submit your travel URL here!</p>
+    <p>{{ user.fname }} {{ user.lname }}, submit your travel URL here!</p>
 
     <body>
 
-<form action="/my-map/{{ user.user_id }}" method="post">
-<!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
-    Attraction URL <input type="text" name="url"><br>
-    <!--  TODO: MAKE THIS A BETTER NAME -->
-    Recommended by <input type="text" name="recommended_by"><br>
-    <input type="submit">
+        <form action="/my-map/{{ user.user_id }}" method="post">
+    <!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
+            Attraction URL <input type="text" name="url"><br>
+            <!--  TODO: MAKE THIS A BETTER NAME -->
+            Recommended by <input type="text" name="recommended_by"><br>
+        <input type="submit">
 
-</form>
+        </form>
 
-</body>
+    </body>
 
 {% endblock %}
 
