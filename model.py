@@ -1,8 +1,8 @@
 """Models and database functions for HB Final Travel Project."""
-
+import sys
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-import sys
+
 
 db = SQLAlchemy()
 

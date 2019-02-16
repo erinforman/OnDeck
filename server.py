@@ -1,13 +1,12 @@
-from pprint import pformat
 import os
-
 import requests
-
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
+from pprint import pformat
 
-from model import connect_to_db, db, User, Location, Attraction
 from location_search import search_raw_url_location, parse_exact_match_results
+from model import connect_to_db, db, User, Location, Attraction
+
 
 app = Flask(__name__)
 
@@ -114,9 +113,9 @@ def find_attraction_location(user_id):
 
     return render_template('location_search_results.html', result=result)
 
-# @app.route('/login')
-# def login():
-#     pass
+@app.route('/bigmapTEST')
+def view_map():
+    return render_template("big_map.html", GOOGLE_KEY=GOOGLE_KEY)
 
 # @app.route('/new-user')
 # def new_user():
