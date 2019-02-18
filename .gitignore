@@ -2,3 +2,5 @@ env/
 *.pyc
 .DS_Store
 secrets.sh
+node_modules/
+package-lock.json

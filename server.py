@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from pprint import pformat
 
@@ -21,46 +21,48 @@ GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 # #<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 
 @app.route('/')
-def submit_login():
+def index():
     """Show homepage and login form."""
 
-    return render_template('homepage.html')
+    #TODO: handle scenario where user is already logged in and lands on homepage
 
-@app.route('/', methods=['POST'])
+    return render_template('homepage.html')
+ 
+@app.route('/login', methods=['POST'])
 def check_valid_login():
     """Check if login info is valid"""
 
     email=request.form["email"]
     password=request.form["password"]
     user=User.query.filter(User.email==email).first()
-
     
+    """email address not found in db"""
     if not user:
-        """email address not found in db"""
+        
         flash("We don't recognize that e-mail address. New user? Register!")
         return redirect('/')
         #TODO: HANDLE NEW USER REGISTRATION
+    
+    """email address found in db but pw doesn't match"""     
+    if password != user.password:
         
-    elif password != user.password:
-        """email address found in db but pw doesn't match""" 
         flash('Incorrect password')
         return redirect('/')
 
-    else:
-        """valid login"""
-        session["user_id"] = user.user_id
-        flash("Logged in")
-        return redirect(f"/my-map/{user.user_id}")
+    """valid login"""
+    session["user_id"] = user.user_id
+    flash("Logged in")
+    return redirect(f"/map/{user.user_id}")
 
     
-@app.route('/my-map/<int:user_id>')
+@app.route('/map/<int:user_id>')
 def submit_new_attraction(user_id):
     """Show main user landing page with submission form and map."""
     user = User.query.options(db.joinedload('attractions').joinedload('location')).get(user_id)
     
-    return render_template('my_map.html', user=user)
+    return render_template('map.html', user=user, GOOGLE_KEY=GOOGLE_KEY)
 
-@app.route('/my-map/<int:user_id>', methods=['POST'])
+@app.route('/map/<int:user_id>', methods=['POST'])
 def find_attraction_location(user_id):
 
     url = request.form["url"]
@@ -105,7 +107,7 @@ def find_attraction_location(user_id):
             flash(formatted_address+' is already on your map.')
 
 
-        return redirect(f'/my-map/'+str(user_id))
+        return redirect(f'/map/'+str(user_id))
 
     
     # print('locationnnnnnnnnn----',result.location)
@@ -113,9 +115,16 @@ def find_attraction_location(user_id):
 
     return render_template('location_search_results.html', result=result)
 
-@app.route('/bigmapTEST')
-def view_map():
-    return render_template("big_map.html", GOOGLE_KEY=GOOGLE_KEY)
+@app.route('/get_map_coords.json')
+def create_map():
+
+    user_id = session["user_id"]
+
+    #find all locations connected to the user_id.
+
+    coords = db.session.query(Location.lat, Location.lng).join(Attraction).join(User).filter(User.user_id == user_id).all()
+    
+    return jsonify(coords=coords)
 
 # @app.route('/new-user')
 # def new_user():

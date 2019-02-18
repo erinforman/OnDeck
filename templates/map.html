@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Travel!{% endblock %}
+
+{% block content %}
+
+    <p>{{ user.fname }} {{ user.lname }}, submit your travel URL here!</p>
+
+    <body>
+
+        <form action="/map/{{ user.user_id }}" method="post">
+    <!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
+            Attraction URL <input type="text" name="url"><br>
+            <!--  TODO: MAKE THIS A BETTER NAME -->
+            Recommended by <input type="text" name="recommended_by"><br>
+        <input type="submit">
+        </form>
+
+    </body>
+
+    <p>Your bucket map!</p>
+
+        <style>
+          #map {
+             height: 800px;  /* The height is 400 pixels */
+             width: 100%;   /* The width is the width of the web page */
+/*             position: initial !important;
+*/           }
+        </style>
+
+    <div id='map' ></div>
+
+    
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="/static/js/map.js"></script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_KEY }}&callback=initMap">
+    </script>
+
+{% endblock %}
+
