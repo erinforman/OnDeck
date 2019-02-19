@@ -108,7 +108,6 @@ def find_attraction_location(user_id):
 
 
         return redirect(f'/map/'+str(user_id))
-
     
     # print('locationnnnnnnnnn----',result.location)
     # print('maaaaatchtype-----',result.match_type)
@@ -117,14 +116,30 @@ def find_attraction_location(user_id):
 
 @app.route('/get_map_coords.json')
 def create_map():
+    """JSON info about map."""
 
     user_id = session["user_id"]
 
-    #find all locations connected to the user_id.
-
-    coords = db.session.query(Location.lat, Location.lng).join(Attraction).join(User).filter(User.user_id == user_id).all()
+    #find all attractions connected to the user_id.
     
-    return jsonify(coords=coords)
+    user_details = [
+        {key: getattr(data,key) for key in data.keys()}
+        for data in db.session.query(
+            Location.formatted_address,
+            Location.lat, 
+            Location.lng,
+            Attraction.attraction_id,
+            Attraction.url,
+            Attraction.recommended_by,
+            Attraction.date_stamp,
+            User.user_id,
+            User.fname,
+            User.lname
+            ).join(Attraction).join(User).filter(User.user_id == user_id).all()
+
+    ]
+
+    return jsonify(user_details)
 
 # @app.route('/new-user')
 # def new_user():
