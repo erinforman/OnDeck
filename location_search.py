@@ -45,13 +45,35 @@ def parse_exact_match_results(location_dict):
 
     return(place_id, formatted_address, lat, lng)
 
+#test url = 'https://www.ndtourism.com/bowman/archaeology-paleontology/pioneer-trails-regional-museum'
+def get_match_from_partial_to_exact(url):
 
-# def exact_match_location(location):
+    spaced_url = url
 
-# raw = search_raw_url_location(url) 
+    garbage_text = ['https', 'www.','http',':','/','.com','-', '=', '?']
 
-# def main_function(url):
-#     if len(raw) == 1 and 
+    # Iterate over the strings to be replaced
+    for garbage in garbage_text:
+        # Check if string is in the main string
+        if garbage in spaced_url :
+            # Replace the string
+            spaced_url = spaced_url.replace(garbage, " ")
+
+    return (url, spaced_url)
+
+
+
+    """
+    if match_type = 'partial'
+    reformat the url in a few different ways and 
+    re-search to see if we can land on an exact match.
+    if we can get an exact match, continue on path of 
+    exact match types.
+    if we can't find an exact match,
+    then....not sure
+    """
+
+
 
 # main_function(url)    
 """
