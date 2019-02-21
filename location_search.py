@@ -49,17 +49,20 @@ def search_cleaned_url(url):
 
     Search = namedtuple('Search',['location', 'match_type'])
 
-    if len(location) == 1 and not location[0].get('partial_match'):
+    if len(location) == 0:
+
+        return Search(location, 'no match')
+
+    elif len(location) == 1: 
+
+        #includes location[0].get('partial_match'):
 
         return Search(location[0], 'exact')
 
-    elif location[0].get('partial_match') or len(location) > 1:
+    elif len(location) > 1:
 
-        return Search(location, 'partial_or_multi_match')
-
-    else:
-
-        return Search(location, 'no match')
+        return Search(location, 'multi_match')
+        
 
 
 def location_for_exact_match(location_result):

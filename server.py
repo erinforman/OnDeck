@@ -90,7 +90,7 @@ def find_attraction_location(user_id):
 
             return redirect(f'/map/{str(user_id)}')
 
-        elif result.match_type == "partial_or_multi_match":
+        elif result.match_type == "multi_match":
 
             return redirect(url_for('choose_correct_location', 
                                     user_id=user_id, 
@@ -102,6 +102,7 @@ def find_attraction_location(user_id):
         else:
 
             flash('No results. Try adding details like city or attraction name to help the search out.')
+            return redirect(f'/map/{str(user_id)}')
 
 
 @app.route('/map/<int:user_id>/search-results')
