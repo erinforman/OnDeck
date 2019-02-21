@@ -37,12 +37,13 @@ function initMap() {
           
               html = ('<div class="window-content">' +
                             '<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                            '<p><b>Name: </b>' + '**Put the name here**'+ '</p>' +
-                            '<p><b>URL: </b>' + results[location].url + '</p>' +
+                            '<p><b>Name: </b>' + results[location].business_name+ '</p>' +
+                            '<p><b>URL: </b><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
+                            // <a href="https://www.w3schools.com/html/">Visit our HTML tutorial</a>
                             //TODO: ADD IF EXISTS FOR RECOMMENDED BY
                             '<p><b>Recommended by: </b>' + results[location].recommended_by + '</p>' +
                             '<p><b>Address: </b>' + results[location].formatted_address + '</p>' +
-                            '<p><b>Saved: </b>' + results[location].date_stamp + '</p>' +
+                            '<p><i><b>Saved: </b>' + results[location].date_stamp + '</i></p>' +
                       '</div>');
 
               bindInfoWindow(marker, map, infoWindow, html);

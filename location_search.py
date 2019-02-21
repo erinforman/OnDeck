@@ -71,13 +71,14 @@ def location_for_exact_match(location_result):
     formatted_address = location_result['formatted_address']
     lat = location_result.get('geometry')['location']['lat']
     lng = location_result.get('geometry')['location']['lng']
+    business_name = search_business_name(place_id)
 
-    return(place_id, formatted_address, lat, lng)
+    return(place_id, formatted_address, lat, lng, business_name)
 
 
 def add_exact_match(location_result, user_id, url, recommended_by=''):
 
-    place_id, formatted_address, lat, lng = location_for_exact_match(location_result)
+    place_id, formatted_address, lat, lng, business_name = location_for_exact_match(location_result)
 
     existing_location = Location.query.get(place_id)
     existing_location_other_users = Location.query.options(db.joinedload('attractions')).filter(Location.place_id==place_id, Attraction.user_id != user_id).first()
@@ -90,6 +91,7 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
                 formatted_address=formatted_address, 
                 lat=lat, 
                 lng=lng,
+                business_name=business_name
             )
 
             db.session.add(new_location)
@@ -110,11 +112,26 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
             db.session.add(new_attraction)
             db.session.commit()
 
-            flash('Exact location match! '+formatted_address+' added to map.')
+            flash('Exact location match! '+business_name+' at '+formatted_address+' added to map.')
 
     else:
 
-        flash(formatted_address+' is already on your map.')
+        flash(business_name+' is already on your map.')
+
+
+def search_business_name(place_id):
+
+    """Call to places API to retrieve human-readable name for the returned result. 
+    This is usually the canonicalized business name."""
+
+    return gmaps.place(place_id,fields=['name'])['result']['name']
+
+def delete_attraction(attraction_id):
+
+    attraction = Attraction.query.get(attraction_id)
+
+    db.session.delete(attraction)
+    db.session.commit()
 
 # main_function(url)    
 """

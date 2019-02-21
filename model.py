@@ -33,6 +33,7 @@ class Location(db.Model):
 
     place_id = db.Column(db.String(64), primary_key=True) #corresponds to place_id in google API
     formatted_address = db.Column(db.String(200), nullable=False)
+    business_name = db.Column(db.String(200), nullable=True)
     #street_number = db.Column(db.Integer, nullable=False)
     #street_name = db.Column(db.String(64), nullable=False) #google route
     #city = db.Column(db.String(64), nullable=False) #locality

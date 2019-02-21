@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html>
 {% extends 'base.html' %}
 
 {% block title %}SEARCH RESULTS!{% endblock %}
@@ -13,7 +11,7 @@
 
             {% for location in result %}
 
-                <input type="radio" name="location" value="{{ location }}"> ADD PLACE NAME! {{ location['formatted_address'] }}
+                <input type="radio" name="location" value="{{ location }}"><b> {{ location['business_name'] }}:</b> {{ location['formatted_address'] }}
                 <br>
 
             {% endfor %}
@@ -30,5 +28,4 @@
 {% endblock %}
 
 
-</html>
 

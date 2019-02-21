@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from pprint import pformat
 
 
-from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match
+from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match, search_business_name, delete_attraction
 
 from model import connect_to_db, db, User, Location, Attraction
 
@@ -76,7 +76,7 @@ def find_attraction_location(user_id):
 
     if result.match_type == 'exact':
 
-        add_exact_match(result.location, user_id, url)
+        add_exact_match(result.location, user_id, url, recommended_by)
 
         return redirect(f'/map/{str(user_id)}')
 
@@ -86,7 +86,7 @@ def find_attraction_location(user_id):
 
         if result.match_type == 'exact':
 
-            add_exact_match(result.location, user_id, url)
+            add_exact_match(result.location, user_id, url, recommended_by)
 
             return redirect(f'/map/{str(user_id)}')
 
@@ -109,6 +109,11 @@ def find_attraction_location(user_id):
 def choose_correct_location(user_id):
 
     result = ast.literal_eval(request.args.get('result'))
+
+    for location in result:
+        location['business_name'] = search_business_name(location['place_id'])
+        #business name comes from a different API: Google Places
+
     url = request.args.get('url')
     recommended_by = request.args.get('recommended_by')
 
@@ -138,6 +143,7 @@ def create_map():
         {key: getattr(data,key) for key in data.keys()}
         for data in db.session.query(
             Location.formatted_address,
+            Location.business_name,
             Location.lat, 
             Location.lng,
             Attraction.attraction_id,
@@ -152,6 +158,32 @@ def create_map():
     ]
 
     return jsonify(user_details)
+
+@app.route('/user-profile/<int:user_id>')
+def show_user_profile(user_id):
+
+    result = db.session.query(
+            Location.formatted_address,
+            Location.business_name,
+            Attraction.attraction_id,
+            Attraction.url,
+            Attraction.recommended_by,
+            User.user_id,
+            User.fname,
+            User.lname
+            ).join(Attraction).join(User).filter(User.user_id == user_id).all()
+
+    return render_template('user_profile.html', result=result, user_id=user_id)
+
+@app.route('/user-profile/<int:user_id>', methods=['POST'])
+def delete_attractions(user_id):
+
+    attraction_ids = request.form.getlist("check_list")
+
+    for a_id in attraction_ids:
+        delete_attraction(a_id)
+
+    return redirect(f'/user-profile/{str(user_id)}')
 
 # @app.route('/new-user')
 # def new_user():
