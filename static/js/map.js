@@ -31,7 +31,7 @@ function initMap() {
                   position: new google.maps.LatLng(results[location].lat, results[location].lng), 
                   map: map,  
                   animation: google.maps.Animation.DROP,
-                  icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAACeQAAAnkBrK5NVQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGdSURBVFiF7Zi9SgNBFEbP3TUSxErwZ8VCX8PgAyg2NkoUBBVLQUHxIRQULFNYSbQQG5M8QNBCgvgEVkIUsZIEMclcCxsJiJuZJaDO6RbufN9hYGZgBUce5yaHaAQbBlkQNAJQpIpwKk2OolL52SVfXBY/zWaWDJIDEVTTbWlvgBF0deTy6qzrgtWZzDyBHAN9P4zW1Zjl0eL1uU2PlWB1emqQUO+B/pglr83U+8TYxc1Lp11Bx3aAhGyh9MSdN0qqp9G7adNlJahqskA67rwIaVSzNl2xd6GtMep0iREZs6my2sFuYieoWu24SPXBpsrukEiQ5/Oei7viDZG8TZfdIWlxgNCMOy9oo5l6P7TpshKMSuVnWroG1GOM140xKzZ3IPyCp87pFA9fXp1IyowLul8LBzCEGEJqwQAqskdLxl3kwHEHv5LLFvXr93p+JpHsP3oPdhEv6IoXdMULuuIFXfGCrnhBV7ygK17QFS/oyr8SvBNQQBFukwpNTFAl2FGogdSUYDep3ETJLRYqucVCJclMux+Y32GC7UTzgA+szH+ow1LTpgAAAABJRU5ErkJggg=='
+                  icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2wAAAdsBV+WHHwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKuSURBVEiJ7ZZdSBRRFMf/586uq60fWUbqVvb9ENiTEOqu+lDgrmsgERQ9BhUVRREJhRRB0EPQQ9FT0UsQUVixWxIESk5GqBD4UCGSteaukVp+rB+7c08vamvujuPO4pN/GGY4c875zb137rkHWJFBhTwVxSFPRXGy8ZakyUJem3mqMw0OeEsdaazYdHlRmlj3ujXIZj56FswAhbyuuwCfkKQfIK2MscbHN8NNzzZpwb7vSYMZoND+ituQfDzr6GlYN2/TjxAC1l3FF6a7OmEKHKp1NUDyyZwz9ZSxrybZPEuWYGAUYJLjY8sGBQBLoa/1VsjrXDN6/85lOTxISsEG3QCy2ZBeXmUeDAD5frWh3+tSxhsf1QMQ+mTISKD3fKTnyyEz4EX+4cQKel3dAG834PqTGZ7Cl2pnrFF/dPr6YdAvTxCa+z3lJSkC86hBR8GAXQhq7vM4d6YAvBQxAKQriswxDWYg3aCrJIIGQl2Br63dNJiAHcYcOcpS1OX7VH+sOWGh73a7bVnW8AOA55UzFmJqVe3Bc5NvXgW0kT+fI8BhPa7IkJMbn7yb+N8eF9ztdtsyLeONUJRq+4Ejgmwxs6oIZOyteaj1fYNsb/MX+dVhPXAixQVnWsNPSVD16kvXha2kNJm8i2rBGnNVlQWE3SI3jy1bjNSHFIGppSUKokpt6Fdw6OKpyFTHe0x/7Ph3feoCpDQNTlgy+z1lRZSWpiIaXXBqZB87ey/c9KI8GujtKfCrtSkFA8Cge0/2lLDO2zaSpeawO7pCE8HnAJAsWLdvWtv0YQRAZ7x3Qa8zGd6clqlkroANNgIDNc6tknAVNO9gmF1kdc7CmCQSV/J9b78OeMtKmURlvk+9ES+noaacWdiJeL1kjp2h3zP33JhRaJBROwBohCxiciTK+ReCDuoEmNtNsAAAAABJRU5ErkJggg=='
                   //<a href="https://icons8.com/icon/30567/map-pin">Map Pin icon by Icons8</a>
                   });  
           
@@ -47,7 +47,7 @@ function initMap() {
 
               bindInfoWindow(marker, map, infoWindow, html);
         
-        }, i * 200);  
+        }, i * 50);  
 
       i+=2
     }

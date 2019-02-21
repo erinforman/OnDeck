@@ -1,79 +1,117 @@
 import googlemaps
 import os
+import re
 from collections import namedtuple
+from urllib.parse import urlparse
+from model import db, User, Location, Attraction
+from flask import flash
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
 
-def search_raw_url_location(url):
+def search_url(url):
 
     """find a location for the raw url submission"""
 
     location = gmaps.geocode(address=url)
+
     Search = namedtuple('Search',['location', 'match_type'])
 
-    if len(location) == 0:
+    if len(location) == 1 and not location[0].get('partial_match'):
 
-        match_type = 'no_match'
-        location_dict = 'no_results'
+        return Search(location[0], 'exact')
 
-    elif len(location) == 1:
-        #if 1 location was returned for the search
-        location_dict = location[0]
-        #take the dictionary out of the result list
-        if location_dict.get('partial_match'):
-        #determine if it was a partial or exact match
-            match_type = 'partial'
-        else:
-            match_type = 'exact'
     else:
-        
-        location_dict = location
-        match_type = 'multi'
 
-    return Search(location_dict, match_type)
+        return Search('no location', 'no match type')
 
-#result.location
-#x = {'address_components': [{'long_name': "Martha's Vineyard", 'short_name': "Martha's Vineyard", 'types': ['establishment', 'natural_feature']}, {'long_name': 'Dukes County', 'short_name': 'Dukes County', 'types': ['administrative_area_level_2', 'political']}, {'long_name': 'Massachusetts', 'short_name': 'MA', 'types': ['administrative_area_level_1', 'political']}, {'long_name': 'United States', 'short_name': 'US', 'types': ['country', 'political']}], 'formatted_address': "Martha's Vineyard, Massachusetts, USA", 'geometry': {'bounds': {'northeast': {'lat': 41.4830865, 'lng': -70.4666525}, 'southwest': {'lat': 41.3013385, 'lng': -70.8384908}}, 'location': {'lat': 41.3804981, 'lng': -70.645473}, 'location_type': 'APPROXIMATE', 'viewport': {'northeast': {'lat': 41.4830865, 'lng': -70.4666525}, 'southwest': {'lat': 41.3013385, 'lng': -70.8384908}}}, 'place_id': 'ChIJOxU0AIkl5YkRQ7y05Pwt1_U', 'types': ['establishment', 'natural_feature']}
-def parse_exact_match_results(location_dict):
+def search_cleaned_url(url):
 
-    #add check on if match type is exact? create a class where function can only act on exacts?
-    place_id = location_dict['place_id']
-    formatted_address = location_dict['formatted_address']
-    lat = location_dict.get('geometry')['location']['lat']
-    lng = location_dict.get('geometry')['location']['lng']
+    """find a location for the cleaned url submission"""
+
+    cleaned_url = re.sub('[^a-zA-Z0-9]+', ' ', url) #Matches non-alphanumeric
+
+    garbage_text = ['http', 'https', 'www', 'com']
+
+    for garbage in garbage_text:
+
+        if garbage in cleaned_url :
+            # Replace the string
+            cleaned_url = cleaned_url.replace(garbage, '')
+    
+    """
+    alt method of cleaning url
+    pattern = re.compile('\w+')
+    ' '.join(pattern.findall(url))
+    """
+
+    location = gmaps.geocode(address=cleaned_url)
+
+    Search = namedtuple('Search',['location', 'match_type'])
+
+    if len(location) == 1 and not location[0].get('partial_match'):
+
+        return Search(location[0], 'exact')
+
+    elif location[0].get('partial_match') or len(location) > 1:
+
+        return Search(location, 'partial_or_multi_match')
+
+    else:
+
+        return Search(location, 'no match')
+
+
+def location_for_exact_match(location_result):
+
+    place_id = location_result['place_id']
+    formatted_address = location_result['formatted_address']
+    lat = location_result.get('geometry')['location']['lat']
+    lng = location_result.get('geometry')['location']['lng']
 
     return(place_id, formatted_address, lat, lng)
 
-#test url = 'https://www.ndtourism.com/bowman/archaeology-paleontology/pioneer-trails-regional-museum'
-def get_match_from_partial_to_exact(url):
 
-    spaced_url = url
+def add_exact_match(location_result, user_id, url, recommended_by=''):
 
-    garbage_text = ['https', 'www.','http',':','/','.com','-', '=', '?']
+    place_id, formatted_address, lat, lng = location_for_exact_match(location_result)
 
-    # Iterate over the strings to be replaced
-    for garbage in garbage_text:
-        # Check if string is in the main string
-        if garbage in spaced_url :
-            # Replace the string
-            spaced_url = spaced_url.replace(garbage, " ")
+    existing_location = Location.query.get(place_id)
+    existing_location_other_users = Location.query.options(db.joinedload('attractions')).filter(Location.place_id==place_id, Attraction.user_id != user_id).first()
+    existing_attraction = Attraction.query.filter(Attraction.user_id == user_id, Attraction.url==url).first()   
 
-    return (url, spaced_url)
+    if not existing_location:
 
+            new_location = Location(
+                place_id=place_id, 
+                formatted_address=formatted_address, 
+                lat=lat, 
+                lng=lng,
+            )
 
+            db.session.add(new_location)
+            db.session.commit()
 
-    """
-    if match_type = 'partial'
-    reformat the url in a few different ways and 
-    re-search to see if we can land on an exact match.
-    if we can get an exact match, continue on path of 
-    exact match types.
-    if we can't find an exact match,
-    then....not sure
-    """
+    if existing_location_other_users:
 
+        flash('Someone else added fun stuff at '+formatted_address+' Check it out <here>.')
 
+    if not existing_attraction:
+
+            new_attraction = Attraction(user_id=user_id, 
+                                        place_id=place_id, 
+                                        url=url, 
+                                        recommended_by=recommended_by,
+                                        )
+
+            db.session.add(new_attraction)
+            db.session.commit()
+
+            flash('Exact location match! '+formatted_address+' added to map.')
+
+    else:
+
+        flash(formatted_address+' is already on your map.')
 
 # main_function(url)    
 """

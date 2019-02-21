@@ -1,10 +1,13 @@
 import os
 import requests
-from flask import Flask, render_template, request, flash, redirect, session, jsonify
+import ast
+from flask import Flask, render_template, request, flash, redirect, session, jsonify, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from pprint import pformat
 
-from location_search import search_raw_url_location, parse_exact_match_results
+
+from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match
+
 from model import connect_to_db, db, User, Location, Attraction
 
 
@@ -69,50 +72,58 @@ def find_attraction_location(user_id):
     recommended_by = request.form["recommended_by"]
     user_id = session["user_id"]
 
-    result = search_raw_url_location(url)
+    result = search_url(url)
 
     if result.match_type == 'exact':
 
-        place_id, formatted_address, lat, lng = parse_exact_match_results(result.location)
+        add_exact_match(result.location, user_id, url)
 
-        existing_location = Location.query.get(place_id)
-        existing_location_other_users = Location.query.options(db.joinedload('attractions')).filter(Location.place_id==place_id, Attraction.user_id != user_id).first()
-        existing_attraction = Attraction.query.filter(Attraction.user_id == user_id, Attraction.url==url).first()   
+        return redirect(f'/map/{str(user_id)}')
 
+    else:
 
-        if not existing_location:
+        result = search_cleaned_url(url) #second api call, only if required
 
-            new_location = Location(place_id=place_id, \
-                                    formatted_address=formatted_address, lat=lat, lng=lng)
+        if result.match_type == 'exact':
 
-            db.session.add(new_location)
-            db.session.commit()
+            add_exact_match(result.location, user_id, url)
 
-        if existing_location_other_users:
+            return redirect(f'/map/{str(user_id)}')
 
-            flash('Someone else added fun stuff at '+formatted_address+' Check it out <here>.')
+        elif result.match_type == "partial_or_multi_match":
 
-        if not existing_attraction:
-
-            new_attraction = Attraction(user_id=user_id, \
-                                        place_id=place_id, url=url, recommended_by=recommended_by)
-
-            db.session.add(new_attraction)
-            db.session.commit()
-
-            flash('Exact location match! '+formatted_address+' added to map.')
+            return redirect(url_for('choose_correct_location', 
+                                    user_id=user_id, 
+                                    url=url,
+                                    recommended_by=recommended_by,
+                                    result=result, 
+                                    ))
 
         else:
 
-            flash(formatted_address+' is already on your map.')
+            flash('No results. Try adding details like city or attraction name to help the search out.')
 
 
-        return redirect(f'/map/'+str(user_id))
+@app.route('/map/<int:user_id>/search-results')
+def choose_correct_location(user_id):
+
+    result = ast.literal_eval(request.args.get('result'))
+    url = request.args.get('url')
+    recommended_by = request.args.get('recommended_by')
+
+    return render_template('search_results.html', result=result, user_id=user_id, url=url, recommended_by=recommended_by)
+
+
+@app.route('/map/<int:user_id>/search-results', methods=['POST'])
+def add_correct_location(user_id):
     
-    # print('locationnnnnnnnnn----',result.location)
-    # print('maaaaatchtype-----',result.match_type)
+    url= request.form["url"]
+    recommended_by = request.form["recommended_by"]
+    location = ast.literal_eval(request.form.get('location'))
 
-    return render_template('location_search_results.html', result=result)
+    add_exact_match(location, user_id, url, recommended_by)
+
+    return redirect(f'/map/{str(user_id)}')
 
 @app.route('/get_map_coords.json')
 def create_map():
