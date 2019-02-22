@@ -69,10 +69,13 @@ def submit_new_attraction(user_id):
 def find_attraction_location(user_id):
 
     url = request.form["url"]
+    helper_search_terms = request.form["helper_search_terms"]
     recommended_by = request.form["recommended_by"]
     user_id = session["user_id"]
 
-    result = search_url(url)
+    print(url, 'dgdgdfgfd', helper_search_terms)
+
+    result = search_url(url, helper_search_terms)
 
     if result.match_type == 'exact':
 
@@ -82,7 +85,7 @@ def find_attraction_location(user_id):
 
     else:
 
-        result = search_cleaned_url(url) #second api call, only if required
+        result = search_cleaned_url(url, helper_search_terms) #second api call, only if required
 
         if result.match_type == 'exact':
 

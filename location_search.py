@@ -9,11 +9,17 @@ from flask import flash
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
 
-def search_url(url):
+def search_url(url, helper_search_terms):
 
     """find a location for the raw url submission"""
 
-    location = gmaps.geocode(address=url)
+    if helper_search_terms:
+
+        location = gmaps.geocode(address=helper_search_terms+' '+url)
+
+    else:
+
+        location = gmaps.geocode(address=url)
 
     Search = namedtuple('Search',['location', 'match_type'])
 
@@ -25,7 +31,7 @@ def search_url(url):
 
         return Search('no location', 'no match type')
 
-def search_cleaned_url(url):
+def search_cleaned_url(url, helper_search_terms):
 
     """find a location for the cleaned url submission"""
 
@@ -44,8 +50,13 @@ def search_cleaned_url(url):
     pattern = re.compile('\w+')
     ' '.join(pattern.findall(url))
     """
+    if helper_search_terms:
 
-    location = gmaps.geocode(address=cleaned_url)
+        location = gmaps.geocode(address=helper_search_terms+' '+cleaned_url)
+
+    else:
+
+        location = gmaps.geocode(address=cleaned_url)
 
     Search = namedtuple('Search',['location', 'match_type'])
 
