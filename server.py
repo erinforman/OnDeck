@@ -4,7 +4,7 @@ import ast
 from flask import Flask, render_template, request, flash, redirect, session, jsonify, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from pprint import pformat
-
+from sqlalchemy.sql import func
 
 from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match, search_business_name, delete_attraction
 
@@ -159,6 +159,8 @@ def create_map():
             ).join(Attraction).join(User).filter(User.user_id == user_id).all()
 
     ]
+
+    #print(user_details[0]['date_stamp'])
 
     return jsonify(user_details)
 

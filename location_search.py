@@ -1,12 +1,11 @@
-import googlemaps
-import os
-import re
+import googlemaps, os, re, datetime, pytz
 from collections import namedtuple
 from urllib.parse import urlparse
 from model import db, User, Location, Attraction
 from flask import flash
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
+pacific = pytz.timezone('US/Pacific')
 
 
 def search_url(url, helper_search_terms):
@@ -114,10 +113,16 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
 
     if not existing_attraction:
 
+            dt = datetime.datetime.now().date()
+            
+           
+
             new_attraction = Attraction(user_id=user_id, 
                                         place_id=place_id, 
                                         url=url, 
                                         recommended_by=recommended_by,
+                                        date_stamp = dt.strftime("%Y-%m-%d")
+                                   
                                         )
 
             db.session.add(new_attraction)

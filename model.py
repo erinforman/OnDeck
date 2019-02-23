@@ -1,5 +1,5 @@
 """Models and database functions for HB Final Travel Project."""
-import sys
+import sys, datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 
@@ -59,7 +59,7 @@ class Attraction(db.Model):
     place_id = db.Column(db.String(64), db.ForeignKey('locations.place_id'))
     url = db.Column(db.String(200), nullable=False) 
     recommended_by = db.Column(db.String(100), nullable=True) 
-    date_stamp = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    date_stamp = db.Column(db.String(64))
 
 
     user = db.relationship("User", backref=db.backref("attractions", order_by=attraction_id))

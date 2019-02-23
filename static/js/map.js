@@ -18,7 +18,7 @@ function initMap() {
   //Retrieve user locations with AJAX
   $.get('/get_map_coords.json', (results) => {
 
-      let  position, html
+      let  position, html, html2
       let i = 1
   
       for (let location in results) {
@@ -41,11 +41,13 @@ function initMap() {
                             '<p><b>URL: </b><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
                             // <a href="https://www.w3schools.com/html/">Visit our HTML tutorial</a>
                             //TODO: ADD IF EXISTS FOR RECOMMENDED BY
-                            '<p><b>Recommended by: </b>' + results[location].recommended_by + '</p>' +
+                            `${results[location].recommended_by 
+                                  ?`<p><b>Recommended by: </b>${results[location].recommended_by}</p>`
+                                   : ''
+                              }` +
                             '<p><b>Address: </b>' + results[location].formatted_address + '</p>' +
                             '<p><i><b>Saved: </b>' + results[location].date_stamp + '</i></p>' +
                       '</div>');
-
               bindInfoWindow(marker, map, infoWindow, html);
         
         }, i * 50);  
