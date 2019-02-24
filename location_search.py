@@ -1,7 +1,7 @@
 import googlemaps, os, re, datetime, pytz
 from collections import namedtuple
 from urllib.parse import urlparse
-from model import db, User, Location, Attraction
+from model import db, User, Location, Attraction, Trip
 from flask import flash
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))

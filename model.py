@@ -34,13 +34,8 @@ class Location(db.Model):
     place_id = db.Column(db.String(64), primary_key=True) #corresponds to place_id in google API
     formatted_address = db.Column(db.String(200), nullable=False)
     business_name = db.Column(db.String(200), nullable=True)
-    #street_number = db.Column(db.Integer, nullable=False)
-    #street_name = db.Column(db.String(64), nullable=False) #google route
-    #city = db.Column(db.String(64), nullable=False) #locality
-    #state = db.Column(db.String(64), nullable=False) #administrative_area_level_1
-    #country = db.Column(db.String(64), nullable=False) #country short name
-    lat = db.Column(db.Float, nullable=False) #geometry location
-    lng = db.Column(db.Float, nullable=False) #geometry location
+    lat = db.Column(db.String, nullable=False) #geometry location
+    lng = db.Column(db.String, nullable=False) #geometry location
 
     def __repr__(self):
 
@@ -71,6 +66,26 @@ class Attraction(db.Model):
         return f"<Attraction attraction_id={self.attraction_id} user_id={self.user_id} \
         place_id={self.place_id} url={self.url} recommended_by={self.recommended_by} \
         date_stamp={self.date_stamp}>"
+
+
+class Trip(db.Model):
+    """Distances between Locations assigned to attractions on website."""
+
+    __tablename__ = "trips" #dim
+
+    trip_id = db.Column(db.Integer, autoincrement=True, primary_key=True) 
+    origin_place_id = db.Column(db.String(64), db.ForeignKey('locations.place_id'))
+    origin_coords = db.Column(db.String(64))
+    destination_place_id = db.Column(db.String(64)) #, db.ForeignKey('locations.place_id'))
+    destination_coords = db.Column(db.String(64))
+    duration = db.Column(db.Integer)
+
+
+    def __repr__(self):
+
+        return f"<Trip trip_id={self.distance_id} origin_place_id={self.origin_place_id} \
+                 origin_coords={self.origin_coords} destination_place_id={self.destination_place_id} \
+                 destination_coords={self.destination_coords} duration={self.duration}>"
 
 ##############################################################################
 # Helper functions
