@@ -1,7 +1,7 @@
 """Models and database functions for HB Final Travel Project."""
-import sys, datetime
+#import sys, datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
+#from sqlalchemy.sql import func
 
 
 db = SQLAlchemy()
@@ -25,6 +25,10 @@ class User(db.Model):
 
         return f"<User user_id={self.user_id} email={self.email} \
         password={self.password} fname={self.fname} lname={self.lname}>"
+
+    def __init__(sel, fname, lname, email, password):
+        self.fname = fname
+#TODO: COMPLETE INIT
 
 class Location(db.Model):
     """Locations assigned to attractions on website."""
