@@ -26,9 +26,14 @@ class User(db.Model):
         return f"<User user_id={self.user_id} email={self.email} \
         password={self.password} fname={self.fname} lname={self.lname}>"
 
-    def __init__(sel, fname, lname, email, password):
+    def __init__(self, email, password, fname, lname):
+        
+        self.email = email
+        self.password = password
         self.fname = fname
-#TODO: COMPLETE INIT
+        self.lname = lname
+
+        print("A User object has been created.")
 
 class Location(db.Model):
     """Locations assigned to attractions on website."""
