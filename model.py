@@ -46,6 +46,8 @@ class Location(db.Model):
     lat = db.Column(db.String, nullable=False) #geometry location
     lng = db.Column(db.String, nullable=False) #geometry location
 
+    trips = db.relationship("Trip", backref=db.backref("location"))
+
     def __repr__(self):
 
         return f"<Location place_id={self.place_id} formatted_address={self.formatted_address} \
@@ -90,9 +92,11 @@ class Trip(db.Model):
     duration = db.Column(db.Integer)
 
 
+
+
     def __repr__(self):
 
-        return f"<Trip trip_id={self.distance_id} origin_place_id={self.origin_place_id} \
+        return f"<Trip trip_id={self.trip_id} origin_place_id={self.origin_place_id} \
                  origin_coords={self.origin_coords} destination_place_id={self.destination_place_id} \
                  destination_coords={self.destination_coords} duration={self.duration}>"
 
