@@ -1,6 +1,7 @@
 import googlemaps, os, pprint
 from model import connect_to_db, db, User, Location, Attraction, Trip
 from sqlalchemy.sql import func
+from sqlalchemy.orm import aliased
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
@@ -49,91 +50,125 @@ def write_distance_matrix_db(user_id, units='imperial'):
                 db.session.commit()
 
 
-def create_itinerary(origin_place_id,duration):
+def mins_to_next_destination(user_id, origin_place_id, excluded_destinations = set()):
+    """A trip means to travel between two points: an origin and a destination.
+    An itinerary is made up of one or more trips."""
 
-    """
-    given a place_id for an origin and a length of time
-    in minutes, return an itinerary that takes up the
-    given length of time
-
-    origina_place_id = 'ChIJAQAAQIyAhYARRN3yIQG4hd4'
-    time_consumed = 0
-
-
-    select the origin from the trips table
-
-    select min(duration) from trips where origin_place_id = ';
-    select destination_place_id from trips where duration = MIN DURATION ABOVE;
-
-    
-
-    while time_consumed < duration:
-
-    """
-    itinerary = []
-    no_repeats = set()
-    closest_destination_mins_int = 0
-    time_left = duration
-
-
-    #If the closest destination would make the itinerary go over the given iterinary duration, stop adding to the intinerary and call it done.
-    while closest_destination_mins_int < time_left:
-        #print(f'origin_place_id:  {origin_place_id}, no_repeats:  {no_repeats}')
-
-        #Given a user id and origin, find how far away (in mins) the closest destination is
-        closest_destination_mins_obj = db.session.query(func.min(Trip.duration) 
+    #Given a user id and origin, find how far away (in mins) the closest destination is
+    closest_destination_mins_obj = db.session.query(func.min(Trip.duration) 
                                                         ).join(Location
                                                         ).join(Attraction
                                                         ).filter(
                                                             Attraction.user_id == user_id, 
                                                             Trip.origin_place_id == origin_place_id,
                                                             #Don't return to places we've already been
-                                                            (~Trip.destination_place_id.in_(no_repeats)),
+                                                            (~Trip.destination_place_id.in_(excluded_destinations)),
                                                         ).first()
+
+    #This will be None if the only destination options are excluded destinations or there
+    # are no trips because you can't drive from the origin to any other user location 
+    # (e.g. Zermatt (car-less city), a single location on Maui)
+    closest_destination_mins_int = [row for row in closest_destination_mins_obj][0]
+
+    return closest_destination_mins_int
+
+
+def create_itinerary(user_id, origin_place_id, duration):
+
+    """
+    given a place_id for an origin and a length of time
+    in minutes, return an itinerary that takes up the
+    given length of time
+    """
+
+    itinerary_seq = []
+    excluded_destinations = set()
+    #no_repeats = set()
+    #Keep track of duration requested and time left separately
+    time_left = duration
+    closest_destination_mins_int = mins_to_next_destination(user_id, origin_place_id, excluded_destinations)
+
+    #If the time it takes to get from an origin to the nearest location exceeds the duration of the itinerary, stop adding to 
+    # the itinerary and return it. If the only destination options are no_repeats, stop adding to the intinerary and call it done.
+
+    if closest_destination_mins_int == None:
+        #return(itinerary_seq, duration, time_left, duration-time_left)
+        return("BLAAAAAAAH")
+    
+    while closest_destination_mins_int <= time_left:
+    #TODO: ADD BETTER HANDLING. IF THE USER SELECTS AN ORIGIN AND A TIME FRAME, WE SHOULD BE ABLE
+    #TO PRE-WARN THEM THAT THEY NEED TO WIDEN THEIR TIME FRAME OR ADD MORE LOCATIONS NEARBY
         
-        #This will be None if the only destination options are no_repeats.                                             
-        closest_destination_mins_int = [row for row in closest_destination_mins_obj][0]
+        #Given a user id and origin and a duration, find the first trip that matches all criteria.
+        trip_obj = db.session.query(Trip,Location
+                                    ).join(Location
+                                    ).join(Attraction
+                                    ).filter(
+                                        Attraction.user_id == user_id, 
+                                        Trip.origin_place_id == origin_place_id, 
+                                        Trip.duration == closest_destination_mins_int,
+                                    ).first()
+        
+        
+        if trip_obj:
 
-        if closest_destination_mins_int:
+            #Add origin to no repeats set
+            excluded_destinations.add(trip_obj.Trip.origin_place_id)
 
-            #print(f'closest_destination_mins_int: {closest_destination_mins_int}')
+            #Add trip to itineary                                     
+            itinerary_seq.append(trip_obj.Trip.trip_id)
 
-            #Given a user id and origin and a duration, find the first trip that matches all criteria.
-            trip_obj = db.session.query(Trip,Location
-                                        ).join(Location
-                                        ).join(Attraction
-                                        ).filter(
-                                            Attraction.user_id == user_id, 
-                                            Trip.origin_place_id == origin_place_id, 
-                                            Trip.duration == closest_destination_mins_int,
-                                        ).first()
-            #Add trip to itineary
-            #print(trip_obj.Trip.trip_id, trip_obj.Location.business_name, itinerary, duration, time_left)
-                                     
-            itinerary.append(trip_obj.Trip.trip_id)
-            #Add origin to no repeats list
-            no_repeats.add(trip_obj.Trip.origin_place_id)
-            #Subtract time from duration
+            #Subtract trip duration from time_left
             time_left -= trip_obj.Trip.duration
+
             #Set trip destination as new trip origin
             origin_place_id = trip_obj.Trip.destination_place_id
-        else:
-            #If the only destination options are no_repeats, stop adding to the intinerary and call it done.
+
+            #Calculate time to next nearest location
+            closest_destination_mins_int = mins_to_next_destination(user_id, origin_place_id, excluded_destinations)
+
+        if not closest_destination_mins_int:
+            
             break
 
 
-    pretty_itenerary = db.session.query(Location.business_name, Attraction.url, User.fname
-                                                        ).join(Attraction
-                                                        ).join(User
-                                                        ).join(Trip
-                                                        ).filter(
-                                                            Attraction.user_id == user_id, 
-                                                            (Trip.trip_id.in_(itinerary)),
-                                                        ).all()
 
-    print(pretty_itenerary)
+    loc_1 = aliased(Location)
+    loc_2 = aliased(Location)
+    attr_1 = aliased(Attraction)
+    attr_2 = aliased(Attraction)
 
-    return (f'Your itinerary!:  {itinerary} Itinerary duration: {duration - time_left} Time left over: {time_left}  Length of vacation: {duration} ')
+    trip_details = db.session.query(Trip.trip_id, 
+                                    loc_1.business_name.label('business_name_1'),
+                                    (attr_1.url.label('url_1')),
+                                    loc_2.business_name.label('business_name_2'),
+                                    (attr_2.url.label('url_2')),
+                                    Trip.duration,
+                                    ).join(loc_1, Trip.origin_place_id == loc_1.place_id
+                                    ).join(loc_2, Trip.destination_place_id == loc_2.place_id
+                                    ).join(attr_1, Trip.origin_place_id == attr_1.place_id
+                                    ).join(attr_2, Trip.destination_place_id == attr_2.place_id
+                                    ).filter(
+                                        attr_1.user_id == user_id, 
+                                        attr_2.user_id == user_id, 
+                                        (Trip.trip_id.in_(itinerary_seq)),
+                                    ).all()
+
+    print(trip_details[0].url_1)
+    print(trip_details[0].url_2)
+    for trip_id in itinerary_seq:
+        for details in trip_details:
+            if trip_id == details.trip_id:
+                print(f' trip id : {details.trip_id}')
+                print(f' origin : {details.business_name_1}')
+                print(f' origin_url: {details.url_1}')
+                print(f' destination: {details.business_name_2}')
+                print(f' destination_url : {details.url_2}')
+                print(f' leg duration : {details.duration}')
+                print()
+
+
+    return(itinerary_seq, trip_details, duration, time_left, duration-time_left)
 
 
 
@@ -141,7 +176,7 @@ def create_itinerary(origin_place_id,duration):
 
 
 
-
+#TODO: the trips in the itinerary need an order enforced.
 
 
 
