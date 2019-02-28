@@ -8,58 +8,91 @@ gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
 def write_distance_matrix_db(user_id, units='imperial'):
 
-    #Retrieve all of a users locations.
-    user_locations = db.session.query(Location.place_id, Location.lat, Location.lng
-                                    ).join(Attraction
-                                    ).filter(Attraction.user_id == user_id
-                                    ).all()
-    
-    #Retrieve all of a users locations which do not have a trip i.e. have no route between itself an any other location.
-    origins_without_trips = db.session.query(Location.place_id, Location.lat, Location.lng
-                                            ).join(Attraction
-                                            ).outerjoin(Trip
-                                            ).filter(
-                                                Attraction.user_id == user_id, 
-                                                Trip.origin_place_id == None,
-                                            ).all()
+    """Retrieve all of a users location pairs for which there is
+    not a trip logged"""
 
-    """
-    #TODO: CONDENSE THE ABOVE INTO ONE QUERY. leverage the results of one query to derive the other.
-    select location.place_id, trip.trip_id
-    from location
-    left join trip
-    on location.place_id = trip.origin_place_id
-    
-    """                               
+    loc_2 = aliased(Location)
+    attrc_2 = aliased(Attraction)
+  
+    trips_leg_a = db.session.query(Location.place_id.label('origin_place_id'), 
+        Location.lat.label('origin_lat'),
+        Location.lng.label('origin_lng'), 
+        Trip.origin_place_id.label('trip_origin_place_id'),
+        loc_2.place_id.label('dest_place_id'), 
+        loc_2.lat.label('dest_lat'), 
+        loc_2.lng.label('dest_lng'), 
+        ).join(Attraction
+        ).outerjoin(Trip
+        ).join(loc_2, loc_2.place_id != Location.place_id
+        ).join(attrc_2, attrc_2.place_id == loc_2.place_id
+        ).filter(Attraction.user_id == user_id, attrc_2.user_id == user_id, 
+        Trip.origin_place_id.is_(None)
+        ).distinct()
+
+    trips_leg_b = db.session.query(loc_2.place_id.label('dest_place_id'), 
+        loc_2.lat.label('dest_lat'), 
+        loc_2.lng.label('dest_lng'),
+        Trip.origin_place_id.label('trip_origin_place_id'), 
+        Location.place_id.label('origin_place_id'), 
+        Location.lat.label('origin_lat'),
+        Location.lng.label('origin_lng'), 
+        ).join(Attraction
+        ).outerjoin(Trip
+        ).join(loc_2, loc_2.place_id != Location.place_id
+        ).join(attrc_2, attrc_2.place_id == loc_2.place_id
+        ).filter(Attraction.user_id == user_id, attrc_2.user_id == user_id, 
+        Trip.origin_place_id.is_(None)
+        ).distinct()
+
+    trips = trips_leg_a.union(trips_leg_b)
+
+    print(trips)
+    print(trips.all())
+
+
     #TODO: check if new trips get added when new origins are added (ie another row for coit and santa cruz when santa cruz is added)
     
     #For origin, loop through every location without a trip. For destination, loop through every location. 
-    new_trips = []
-    for origin in origins_without_trips:
-        
-        for destination in user_locations:
-  
-            if origin.place_id == destination.place_id:
-                continue
-             
-            duration_dict = gmaps.distance_matrix((origin.lat + ',' + origin.lng), (destination.lat + ',' + destination.lng), units=units)
-            
-            if duration_dict["rows"][0]['elements'][0].get('duration'):
-                """Includes trips that can only be road trips. Travel mode is driving."""
+    # new_trips = []
+    # legs = []
 
-                duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
-                
+    # for trip in trips:
 
-                new_trips.append(Trip(origin_place_id=origin.place_id, 
-                                origin_coords=(origin.lat + ',' + origin.lng), 
-                                destination_place_id=destination.place_id, 
-                                destination_coords=(destination.lat + ',' + destination.lng), 
-                                duration=duration_sec))
+    #     duration_dict_leg_a = gmaps.distance_matrix((trip.origin_lat + ',' + trip.origin_lng), 
+    #         (trip.dest_lat + ',' + trip.dest_lng), units=units)
 
-    if new_trips:
-        # TODO Check how to add list to db.session
-        db.session.add(new_trips)          
-        db.session.commit()
+    #     duration_dict_leg_b = gmaps.distance_matrix((trip.dest_lat + ',' + trip.dest_lng),
+    #         (trip.origin_lat + ',' + trip.origin_lng), units=units)
+
+    #     legs.extend([duration_dict_leg_a, duration_dict_leg_b])
+
+    #     for duration_dict in legs:
+         
+    #         if duration_dict["rows"][0]['elements'][0].get('duration'):
+           
+    #             """Includes trips that can only be road trips. Travel mode is driving."""
+
+    #             duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
+
+    #             leg_a =
+
+    #             leg_b = 
+                    
+    #             new_trips.append(Trip(origin_place_id=origin.place_id, 
+    #                             origin_coords=(origin.lat + ',' + origin.lng), 
+    #                             destination_place_id=destination.place_id, 
+    #                             destination_coords=(destination.lat + ',' + destination.lng), 
+    #                             duration=duration_sec),
+    #                             Trip(origin_place_id=destination.place_id, 
+    #                             origin_coords=(destination.lat + ',' + destination.lng), 
+    #                             destination_place_id=origin.place_id, 
+    #                             destination_coords=(origin.lat + ',' + origin.lng), 
+    #                             duration=duration_sec))
+
+    # if new_trips:
+
+    #     db.session.add_all(new_trips)          
+    #     db.session.commit()
 
 
 def get_mins_to_next_destination(user_id, origin_place_id, excluded_destinations):
@@ -79,7 +112,7 @@ def get_mins_to_next_destination(user_id, origin_place_id, excluded_destinations
                 (~Trip.destination_place_id.in_(excluded_destinations)),
             ).first()[0]
             # use order by instead of an aggregate to find lowest mins, then select mins and destination place id together.
-            # grab everything else with it, including origin info, (attraction ur)
+            # grab everything else with it, including origin info, (attraction ur) so i dont need to do it again in the next function.
     except:
         return 
     else:
@@ -194,47 +227,17 @@ def create_itinerary(user_id, origin_place_id, duration):
 
 
 
-
-
-
+    user_locations = db.session.query(
+        Location.place_id, 
+        Location.lat, 
+        Location.lng,
+        Trip.origin_place_id,
+        ).join(Attraction
+        ).outerjoin(Trip
+        ).filter(Attraction.user_id == user_id
+        ).distinct().subquery()
 
 #TODO: the trips in the itinerary need an order enforced.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
