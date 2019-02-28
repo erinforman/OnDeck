@@ -16,13 +16,6 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('APP_KEY')
 GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 
-# GOOGLE_URL_1 = "https://maps.googleapis.com/maps/api/js?key="+GOOGLE_KEY+"&callback=initMap"
-# GOOGLE_URL_2 = "https://maps.googleapis.com/maps/api/js?key="+GOOGLE_KEY+"&libraries=places&callback=initMap" 
-# GOOGLE_URL_3 = "https://maps.googleapis.com/maps/api/place/findplacefromtext/output?key="+GOOGLE_KEY+"&input=coit tower&inputtype=textquery"
-# GOOGLE_URL_4 = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key="+GOOGLE_KEY
-# GOOGLE_URL_5 = <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key="+GOOGLE_KEY+"&libraries=places"></script>
-# #<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-
 @app.route('/')
 def index():
     """Show homepage and login form."""
@@ -34,28 +27,25 @@ def index():
 @app.route('/login', methods=['POST'])
 def check_valid_login():
     """Check if login info is valid"""
-
-    email = request.form["email"]
-    password=request.form["password"]
+    email = request.form['email']
+    password=request.form['password']
     user=User.query.filter(User.email == email).first()
     
     """email address not found in db"""
     if not user:
-        
-        flash("We don't recognize that e-mail address. New user? Register!")
+        flash('We do not recognize that e-mail address. New user? Register!')
         return redirect('/')
         #TODO: HANDLE NEW USER REGISTRATION
     
     """email address found in db but pw doesn't match"""     
     if password != user.password:
-        
         flash('Incorrect password')
         return redirect('/')
 
     """valid login"""
-    session["user_id"] = user.user_id
-    flash("Logged in")
-    return redirect(f"/map/{user.user_id}")
+    session['user_id'] = user.user_id
+    flash('Logged in')
+    return redirect(f'/map/{user.user_id}')
 
     
 @app.route('/map/<int:user_id>')
@@ -63,49 +53,37 @@ def submit_new_attraction(user_id):
     """Show main user landing page with submission form and map."""
     user = User.query.options(
         db.joinedload('attractions').joinedload('location')
-    ).get(user_id)
+        ).get(user_id)
     
     return render_template('map.html', user=user, GOOGLE_KEY=GOOGLE_KEY)
 
 @app.route('/map/<int:user_id>', methods=['POST'])
 def find_attraction_location(user_id):
 
-    url = request.form["url"]
-    helper_search_terms = request.form["helper_search_terms"]
-    recommended_by = request.form["recommended_by"]
-    user_id = session["user_id"]
-
-    print(url, 'dgdgdfgfd', helper_search_terms)
+    url = request.form['url']
+    helper_search_terms = request.form['helper_search_terms']
+    recommended_by = request.form['recommended_by']
+    user_id = session['user_id']
 
     result = search_url(url, helper_search_terms)
 
     if result.match_type == 'exact':
-
         add_exact_match(result.location, user_id, url, recommended_by)
-
         return redirect(f'/map/{str(user_id)}')
-
     else:
-
-        result = search_cleaned_url(url, helper_search_terms) #second api call, only if required
+        result = search_cleaned_url(url, helper_search_terms) 
 
         if result.match_type == 'exact':
-
             add_exact_match(result.location, user_id, url, recommended_by)
-
             return redirect(f'/map/{str(user_id)}')
-
-        elif result.match_type == "multi_match":
-
-            return redirect(url_for("choose_correct_location", 
-                                    user_id=user_id, 
-                                    url=url,
-                                    recommended_by=recommended_by,
-                                    result=result, 
-                                    ))
-
+        elif result.match_type == 'multi_match':
+            return redirect(url_for('choose_correct_location', 
+                user_id=user_id, 
+                url=url,
+                recommended_by=recommended_by,
+                result=result, 
+                ))
         else:
-
             flash('No results. Try adding details like city or attraction name to help the search out.')
             return redirect(f'/map/{str(user_id)}')
 
@@ -128,8 +106,8 @@ def choose_correct_location(user_id):
 @app.route('/map/<int:user_id>/search-results', methods=['POST'])
 def add_correct_location(user_id):
     
-    url= request.form["url"]
-    recommended_by = request.form["recommended_by"]
+    url= request.form['url']
+    recommended_by = request.form['recommended_by']
     location = ast.literal_eval(request.form.get('location'))
 
     add_exact_match(location, user_id, url, recommended_by)
@@ -139,11 +117,8 @@ def add_correct_location(user_id):
 @app.route('/get_map_coords.json')
 def create_map():
     """JSON info about map."""
-
-    user_id = session["user_id"]
-
+    user_id = session['user_id']
     #find all attractions connected to the user_id.
-    
     user_details = [
         {key: getattr(data,key) for key in data.keys()}
         for data in db.session.query(
@@ -162,30 +137,28 @@ def create_map():
 
     ]
 
-    #print(user_details[0]['date_stamp'])
-
     return jsonify(user_details)
 
 @app.route('/user-profile/<int:user_id>')
 def show_user_profile(user_id):
 
     result = db.session.query(
-            Location.formatted_address,
-            Location.business_name,
-            Attraction.attraction_id,
-            Attraction.url,
-            Attraction.recommended_by,
-            User.user_id,
-            User.fname,
-            User.lname
-            ).join(Attraction).join(User).filter(User.user_id == user_id).all()
+        Location.formatted_address,
+        Location.business_name,
+        Attraction.attraction_id,
+        Attraction.url,
+        Attraction.recommended_by,
+        User.user_id,
+        User.fname,
+        User.lname
+        ).join(Attraction).join(User).filter(User.user_id == user_id).all()
 
     return render_template('user_profile.html', result=result, user_id=user_id)
 
 @app.route('/user-profile/<int:user_id>', methods=['POST'])
 def delete_attractions(user_id):
 
-    attraction_ids = request.form.getlist("check_list")
+    attraction_ids = request.form.getlist('check_list')
 
     for a_id in attraction_ids:
         delete_attraction(a_id)
@@ -206,7 +179,7 @@ def delete_attractions(user_id):
 #     return render_template('new_submission.html')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.debug = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     connect_to_db(app)

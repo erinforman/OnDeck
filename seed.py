@@ -18,15 +18,15 @@ def create_db():
  
 def create_users():
 
-    ross = User(fname="Ross", lname='Geller', email="ross@test.com", password=1)
+    ross = User(fname='Ross', lname='Geller', email='ross@test.com', password=1)
 
-    joey = User(fname="Joey", lname='Tribbiani', email="joey@test.com", password=2)
+    joey = User(fname='Joey', lname='Tribbiani', email='joey@test.com', password=2)
 
-    monica = User(fname="Monica", lname='Geller', email="monica@test.com", password='m')
+    monica = User(fname='Monica', lname='Geller', email='monica@test.com', password='m')
 
     db.session.add_all([ross, joey, monica])
     db.session.commit()
-    print("Added Users.")
+    print('Added Users.')
 
 
 if __name__ == "__main__":
@@ -35,5 +35,5 @@ if __name__ == "__main__":
     create_db()
     connect_to_db(app)
     db.create_all()
-    print("Connected to DB.")
+    print('Connected to DB.')
     create_users()
