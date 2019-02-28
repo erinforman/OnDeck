@@ -35,9 +35,9 @@ def index():
 def check_valid_login():
     """Check if login info is valid"""
 
-    email=request.form["email"]
+    email = request.form["email"]
     password=request.form["password"]
-    user=User.query.filter(User.email==email).first()
+    user=User.query.filter(User.email == email).first()
     
     """email address not found in db"""
     if not user:
@@ -61,7 +61,9 @@ def check_valid_login():
 @app.route('/map/<int:user_id>')
 def submit_new_attraction(user_id):
     """Show main user landing page with submission form and map."""
-    user = User.query.options(db.joinedload('attractions').joinedload('location')).get(user_id)
+    user = User.query.options(
+        db.joinedload('attractions').joinedload('location')
+    ).get(user_id)
     
     return render_template('map.html', user=user, GOOGLE_KEY=GOOGLE_KEY)
 
@@ -95,7 +97,7 @@ def find_attraction_location(user_id):
 
         elif result.match_type == "multi_match":
 
-            return redirect(url_for('choose_correct_location', 
+            return redirect(url_for("choose_correct_location", 
                                     user_id=user_id, 
                                     url=url,
                                     recommended_by=recommended_by,

@@ -22,8 +22,19 @@ def write_distance_matrix_db(user_id, units='imperial'):
                                                 Attraction.user_id == user_id, 
                                                 Trip.origin_place_id == None,
                                             ).all()
+
+    """
+    #TODO: CONDENSE THE ABOVE INTO ONE QUERY. leverage the results of one query to derive the other.
+    select location.place_id, trip.trip_id
+    from location
+    left join trip
+    on location.place_id = trip.origin_place_id
+    
+    """                               
+    #TODO: check if new trips get added when new origins are added (ie another row for coit and santa cruz when santa cruz is added)
     
     #For origin, loop through every location without a trip. For destination, loop through every location. 
+    new_trips = []
     for origin in origins_without_trips:
         
         for destination in user_locations:
@@ -39,39 +50,46 @@ def write_distance_matrix_db(user_id, units='imperial'):
                 duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
                 
 
-                new_trip = Trip(origin_place_id=origin.place_id, 
+                new_trips.append(Trip(origin_place_id=origin.place_id, 
                                 origin_coords=(origin.lat + ',' + origin.lng), 
                                 destination_place_id=destination.place_id, 
                                 destination_coords=(destination.lat + ',' + destination.lng), 
-                                duration=duration_sec)
+                                duration=duration_sec))
 
-              
-                db.session.add(new_trip)
-                db.session.commit()
+    if new_trips:
+        # TODO Check how to add list to db.session
+        db.session.add(new_trips)          
+        db.session.commit()
 
 
-def mins_to_next_destination(user_id, origin_place_id, excluded_destinations = set()):
+def get_mins_to_next_destination(user_id, origin_place_id, excluded_destinations):
+    #default for setting variables is no space between equals. most other places, put a space.
     """A trip means to travel between two points: an origin and a destination.
     An itinerary is made up of one or more trips."""
 
     #Given a user id and origin, find how far away (in mins) the closest destination is
-    closest_destination_mins_obj = db.session.query(func.min(Trip.duration) 
-                                                        ).join(Location
-                                                        ).join(Attraction
-                                                        ).filter(
-                                                            Attraction.user_id == user_id, 
-                                                            Trip.origin_place_id == origin_place_id,
-                                                            #Don't return to places we've already been
-                                                            (~Trip.destination_place_id.in_(excluded_destinations)),
-                                                        ).first()
+    try:
+        mins_to_next_destination =  db.session.query(func.min(Trip.duration) 
+            ).join(Location
+            ).join(Attraction
+            ).filter(
+                Attraction.user_id == user_id, 
+                Trip.origin_place_id == origin_place_id,
+                #Don't return to places we've already been
+                (~Trip.destination_place_id.in_(excluded_destinations)),
+            ).first()[0]
+            # use order by instead of an aggregate to find lowest mins, then select mins and destination place id together.
+            # grab everything else with it, including origin info, (attraction ur)
+    except:
+        return 
+    else:
+        return mins_to_next_destination
 
     #This will be None if the only destination options are excluded destinations or there
     # are no trips because you can't drive from the origin to any other user location 
     # (e.g. Zermatt (car-less city), a single location on Maui)
-    closest_destination_mins_int = [row for row in closest_destination_mins_obj][0]
-
-    return closest_destination_mins_int
-
+    #cmd+d highlights all the things you want.
+   
 
 def create_itinerary(user_id, origin_place_id, duration):
 
@@ -86,14 +104,18 @@ def create_itinerary(user_id, origin_place_id, duration):
     #no_repeats = set()
     #Keep track of duration requested and time left separately
     time_left = duration
-    closest_destination_mins_int = mins_to_next_destination(user_id, origin_place_id, excluded_destinations)
+    closest_destination_mins_int = get_mins_to_next_destination(user_id, origin_place_id, excluded_destinations)
 
     #If the time it takes to get from an origin to the nearest location exceeds the duration of the itinerary, stop adding to 
     # the itinerary and return it. If the only destination options are no_repeats, stop adding to the intinerary and call it done.
 
     if closest_destination_mins_int == None:
         #return(itinerary_seq, duration, time_left, duration-time_left)
-        return("BLAAAAAAAH")
+        return("BLAAAAAAAH ****** No man is an island...or a car-less city")
+
+    if closest_destination_mins_int > time_left:
+        return(f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}')
+
     
     while closest_destination_mins_int <= time_left:
     #TODO: ADD BETTER HANDLING. IF THE USER SELECTS AN ORIGIN AND A TIME FRAME, WE SHOULD BE ABLE
@@ -154,18 +176,18 @@ def create_itinerary(user_id, origin_place_id, duration):
                                         (Trip.trip_id.in_(itinerary_seq)),
                                     ).all()
 
-    print(trip_details[0].url_1)
-    print(trip_details[0].url_2)
-    for trip_id in itinerary_seq:
-        for details in trip_details:
-            if trip_id == details.trip_id:
-                print(f' trip id : {details.trip_id}')
-                print(f' origin : {details.business_name_1}')
-                print(f' origin_url: {details.url_1}')
-                print(f' destination: {details.business_name_2}')
-                print(f' destination_url : {details.url_2}')
-                print(f' leg duration : {details.duration}')
-                print()
+        # print(trip_details[0].url_1)
+        # print(trip_details[0].url_2)
+        # for trip_id in itinerary_seq:
+        #     for details in trip_details:
+        #         if trip_id == details.trip_id:
+        #             print(f' trip id : {details.trip_id}')
+        #             print(f' origin : {details.business_name_1}')
+        #             print(f' origin_url: {details.url_1}')
+        #             print(f' destination: {details.business_name_2}')
+        #             print(f' destination_url : {details.url_2}')
+        #             print(f' leg duration : {details.duration}')
+        #             print()
 
 
     return(itinerary_seq, trip_details, duration, time_left, duration-time_left)
