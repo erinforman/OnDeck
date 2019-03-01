@@ -10,89 +10,58 @@ def write_distance_matrix_db(user_id, units='imperial'):
 
     """Retrieve all of a users location pairs for which there is
     not a trip logged"""
-
-    loc_2 = aliased(Location)
+    loc_1 = aliased(Location)
     attrc_2 = aliased(Attraction)
   
     trips_leg_a = db.session.query(Location.place_id.label('origin_place_id'), 
         Location.lat.label('origin_lat'),
         Location.lng.label('origin_lng'), 
         Trip.origin_place_id.label('trip_origin_place_id'),
-        loc_2.place_id.label('dest_place_id'), 
-        loc_2.lat.label('dest_lat'), 
-        loc_2.lng.label('dest_lng'), 
+        loc_1.place_id.label('dest_place_id'), 
+        loc_1.lat.label('dest_lat'), 
+        loc_1.lng.label('dest_lng'), 
         ).join(Attraction
         ).outerjoin(Trip
-        ).join(loc_2, loc_2.place_id != Location.place_id
-        ).join(attrc_2, attrc_2.place_id == loc_2.place_id
+        ).join(loc_1, loc_1.place_id != Location.place_id
+        ).join(attrc_2, attrc_2.place_id == loc_1.place_id
         ).filter(Attraction.user_id == user_id, attrc_2.user_id == user_id, 
         Trip.origin_place_id.is_(None)
         ).distinct()
 
-    trips_leg_b = db.session.query(loc_2.place_id.label('dest_place_id'), 
-        loc_2.lat.label('dest_lat'), 
-        loc_2.lng.label('dest_lng'),
-        Trip.origin_place_id.label('trip_origin_place_id'), 
-        Location.place_id.label('origin_place_id'), 
-        Location.lat.label('origin_lat'),
-        Location.lng.label('origin_lng'), 
-        ).join(Attraction
-        ).outerjoin(Trip
-        ).join(loc_2, loc_2.place_id != Location.place_id
-        ).join(attrc_2, attrc_2.place_id == loc_2.place_id
-        ).filter(Attraction.user_id == user_id, attrc_2.user_id == user_id, 
-        Trip.origin_place_id.is_(None)
-        ).distinct()
+    trips_leg_b_sub = trips_leg_a.subquery()
 
-    trips = trips_leg_a.union(trips_leg_b)
+    trips_leg_b = db.session.query(trips_leg_b_sub.c.dest_place_id.label('origin_place_id'), 
+        trips_leg_b_sub.c.dest_lat.label('origin_lat'),
+        trips_leg_b_sub.c.dest_lng.label('origin_lng'),
+        trips_leg_b_sub.c.trip_origin_place_id.label('trip_origin_place_id'),
+        trips_leg_b_sub.c.origin_place_id.label('dest_place_id'),
+        trips_leg_b_sub.c.origin_lat.label('dest_lat'),
+        trips_leg_b_sub.c.origin_lng.label('dest_lng'),).distinct()
 
-    print(trips)
-    print(trips.all())
-
+    trips = trips_leg_b.union(trips_leg_a).all()
 
     #TODO: check if new trips get added when new origins are added (ie another row for coit and santa cruz when santa cruz is added)
-    
-    #For origin, loop through every location without a trip. For destination, loop through every location. 
-    # new_trips = []
-    # legs = []
+    new_trips = []
 
-    # for trip in trips:
+    for trip in trips:
 
-    #     duration_dict_leg_a = gmaps.distance_matrix((trip.origin_lat + ',' + trip.origin_lng), 
-    #         (trip.dest_lat + ',' + trip.dest_lng), units=units)
-
-    #     duration_dict_leg_b = gmaps.distance_matrix((trip.dest_lat + ',' + trip.dest_lng),
-    #         (trip.origin_lat + ',' + trip.origin_lng), units=units)
-
-    #     legs.extend([duration_dict_leg_a, duration_dict_leg_b])
-
-    #     for duration_dict in legs:
+        duration_dict = gmaps.distance_matrix((trip.origin_lat + ',' + trip.origin_lng), 
+            (trip.dest_lat + ',' + trip.dest_lng), units=units)
          
-    #         if duration_dict["rows"][0]['elements'][0].get('duration'):
-           
-    #             """Includes trips that can only be road trips. Travel mode is driving."""
+        if duration_dict["rows"][0]['elements'][0].get('duration'):
+            """Includes trips that can only be road trips. Travel mode is driving."""
+            duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
 
-    #             duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
+            new_trips.append(Trip(origin_place_id=trip.origin_place_id, 
+                            origin_coords=(trip.origin_lat + ',' + trip.origin_lng), 
+                            destination_place_id=trip.dest_place_id, 
+                            destination_coords=(trip.dest_lat + ',' + trip.dest_lng), 
+                            duration=duration_sec))
 
-    #             leg_a =
+    if new_trips:
 
-    #             leg_b = 
-                    
-    #             new_trips.append(Trip(origin_place_id=origin.place_id, 
-    #                             origin_coords=(origin.lat + ',' + origin.lng), 
-    #                             destination_place_id=destination.place_id, 
-    #                             destination_coords=(destination.lat + ',' + destination.lng), 
-    #                             duration=duration_sec),
-    #                             Trip(origin_place_id=destination.place_id, 
-    #                             origin_coords=(destination.lat + ',' + destination.lng), 
-    #                             destination_place_id=origin.place_id, 
-    #                             destination_coords=(origin.lat + ',' + origin.lng), 
-    #                             duration=duration_sec))
-
-    # if new_trips:
-
-    #     db.session.add_all(new_trips)          
-    #     db.session.commit()
+        db.session.add_all(new_trips)          
+        db.session.commit()
 
 
 def get_mins_to_next_destination(user_id, origin_place_id, excluded_destinations):
