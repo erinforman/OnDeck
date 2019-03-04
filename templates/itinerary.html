@@ -5,6 +5,8 @@
 
 {% block content %}
 
+
+
     <p>{{ result[0].fname }}, create an itinerary!</p>
     <body>
         <form id = "itinerary_form">            
@@ -25,17 +27,102 @@
             <br>
             <input id='submit' type='submit'>
         </form>
+
+
+
+
+
+<style>
+{font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+
+
+
+
+        <br>
+
         <div id="itinerary_duration" style= 'display: inline-block; padding: 5px;'></div>
         <br>
         <div id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
         <br>
+        <div id="legs">
         {%for i in range(result|length + 1)%}
-
-        <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-        <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-        <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-        <br>
+            <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+            <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+            <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+            <br>
         {% endfor %}
+        </div>
+
+        <div id="email_itinerary">
+            
+
+        </div>
+
+        <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id = "email_form" action="/itinerary/{{ user_id }}" method="POST">          
+            Recipient Email <input type='text' name='to_email' value='rachel@bloomingdales.com'>
+            <br>
+            <br>
+            Your Name <input type='text' name='your_name'value='Monica Geller'>
+            <input type="hidden" id="content" name="content">
+          
+                {%for i in range(result|length + 1)%}
+                    <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+                    <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+                    <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+                {% endfor %}
+           
+            <input id='submit' type='submit'>
+        </form>
+
+          </div>
+
+        </div>
+
     </body>
 
     <script src="http://code.jquery.com/jquery.js"></script>
@@ -45,5 +132,3 @@
 
 
         
-        <div id="itinerary_destination_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-        <div id="itinerary_destination_url_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>

@@ -1,6 +1,8 @@
 import os
 import requests
 import ast
+import sendgrid
+from sendgrid.helpers.mail import *
 from flask import Flask, render_template, request, flash, redirect, session, jsonify, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from pprint import pformat
@@ -16,6 +18,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('APP_KEY')
 GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 @app.route('/')
 def index():
@@ -45,6 +48,7 @@ def check_valid_login():
 
     """valid login"""
     session['user_id'] = user.user_id
+    session['user_email'] = email
     flash('Logged in')
     return redirect(f'/map/{user.user_id}')
 
@@ -191,26 +195,50 @@ def select_itinerary_parameters(user_id):
 
     return render_template('itinerary.html', result = result, user_id = user_id)
 
+
+
 @app.route('/itinerary.json')
 def create_itinerary_from_parameters():
-    print(request.args)
+
     user_id = session['user_id']
     origin_place_id = request.args['origin_place_id']
-    print(origin_place_id)
     hours = request.args['hours']
-    #print(hours)
     days = request.args['days']
-    #print(days)
-
     duration = (int(hours) * 3600) + (int(days) * 86400)
-    print(duration)
-
-
-    #print(origin_place_id, hours, days, duration)
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
 
+    session['itinerary_details'] = itinerary.itinerary_details
+
+    
+
     return jsonify(itinerary)
+
+
+@app.route('/itinerary/<int:user_id>', methods=['POST'])
+def email_itinerary(user_id):
+
+    itinerary_details = session['itinerary_details']
+
+    #TODO ADD IN MORE ITINERARY DETAILS IN THE EMAIL. 
+
+    content = ''
+
+    for i, trip in enumerate(itinerary_details, start=1):
+        content = content + str(i) + ') <a href="' + trip[3] + '">' + trip[4] + '</a>' + "<br/>"
+    
+
+    sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+    from_email = Email(session['user_email'])
+    to_email = Email(request.form.get('to_email'))
+    subject = 'A friend sent you an itinerary CHANGE THIS'
+    content = Content("text/html", content)
+    # content = Content("text/plain", 'this is where the itinerary will go')
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+
+
+    return redirect(f'/itinerary/{str(user_id)}')
 
 # @app.route('/new-user')
 # def new_user():
