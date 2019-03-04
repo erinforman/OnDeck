@@ -102,9 +102,6 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
     else:
         flash(f'{business_name} is already on your map.')
 
-    #Add new trips for itinerary
-    write_distance_matrix_db(user_id)
-
 
 def search_business_name(place_id):
     """Call to places API to retrieve human-readable name for the returned 
@@ -112,6 +109,7 @@ def search_business_name(place_id):
 
     place = gmaps.place(place_id, fields=['name'])
     return place['result']['name']
+
 
 def delete_attraction(attraction_id):
 

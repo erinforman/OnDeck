@@ -53,6 +53,8 @@ function initMap() {
 
       i+=1
     }
+
+  
   });
 
     function bindInfoWindow(marker, map, infoWindow, html) {
@@ -67,6 +69,11 @@ function initMap() {
     changeMarkerPos(3.165759, 101.611416);
 });
 
+
+ // make get request to new return from distance matrix
+     $.get('/calculate_trips', (return) => {
+      console.log(return)
+     });
     
 }
 

@@ -9,7 +9,7 @@ from pprint import pformat
 from sqlalchemy.sql import func
 
 from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match, search_business_name, delete_attraction
-from distance_matrix import create_itinerary
+from distance_matrix import create_itinerary, write_distance_matrix_db
 from model import connect_to_db, db, User, Location, Attraction
 
 
@@ -32,8 +32,8 @@ def index():
 def check_valid_login():
     """Check if login info is valid"""
     email = request.form['email']
-    password=request.form['password']
-    user=User.query.filter(User.email == email).first()
+    password = request.form['password']
+    user = User.query.filter(User.email == email).first()
     
     """email address not found in db"""
     if not user:
@@ -119,6 +119,13 @@ def add_correct_location(user_id):
 
     return redirect(f'/map/{str(user_id)}')
 
+@app.route('/calculate_trips')
+def calculate_trips():
+    #Add new trips for itinerary
+    user_id = session['user_id']
+
+    return write_distance_matrix_db(user_id)
+    
 @app.route('/get_map_coords.json')
 def create_map():
     """JSON info about map."""
