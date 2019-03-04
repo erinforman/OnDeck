@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Itineraries!{% endblock %}
+
+{% block content %}
+
+    <p>{{ result[0].fname }}, create an itinerary!</p>
+    <body>
+        <form id = "itinerary_form">            
+            Select a starting point:
+            <br>
+            <select name='origin_place_id' >
+                {%for location in result%}
+                    <option value='{{location["place_id"]}}''> {{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
+                {% endfor %}
+            </select>
+            <br>
+            <br>
+            Enter trip duration:
+            <br>
+            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00'>
+            Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
+            <br>
+            <br>
+            <input id='submit' type='submit'>
+        </form>
+        <div id="itinerary_duration" style= 'display: inline-block; padding: 5px;'></div>
+        <br>
+        <div id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
+        <br>
+        {%for i in range(result|length + 1)%}
+
+        <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+        <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+        <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+        <br>
+        {% endfor %}
+    </body>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/itinerary.js"></script>
+
+{% endblock %}
+
+
+        
+        <div id="itinerary_destination_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
+        <div id="itinerary_destination_url_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>

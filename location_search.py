@@ -2,6 +2,7 @@ import googlemaps, os, re, datetime
 from collections import namedtuple
 from model import connect_to_db, db, User, Location, Attraction
 from flask import flash
+from distance_matrix import write_distance_matrix_db
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 Search = namedtuple('Search',['location', 'match_type'])
@@ -100,6 +101,9 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
 
     else:
         flash(f'{business_name} is already on your map.')
+
+    #Add new trips for itinerary
+    write_distance_matrix_db(user_id)
 
 
 def search_business_name(place_id):

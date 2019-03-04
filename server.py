@@ -7,7 +7,7 @@ from pprint import pformat
 from sqlalchemy.sql import func
 
 from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match, search_business_name, delete_attraction
-
+from distance_matrix import create_itinerary
 from model import connect_to_db, db, User, Location, Attraction
 
 
@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 app.secret_key = os.environ.get('APP_KEY')
 GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 
 @app.route('/')
 def index():
@@ -22,7 +23,7 @@ def index():
 
     #TODO: handle scenario where user is already logged in and lands on homepage
 
-    return render_template('homepage.html')
+    return render_template('homepage.html', GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID)
  
 @app.route('/login', methods=['POST'])
 def check_valid_login():
@@ -133,8 +134,10 @@ def create_map():
             User.user_id,
             User.fname,
             User.lname
-            ).join(Attraction).join(User).filter(User.user_id == user_id).all()
-
+            ).join(Attraction
+            ).join(User
+            ).filter(User.user_id == user_id
+            ).all()
     ]
 
     return jsonify(user_details)
@@ -151,9 +154,12 @@ def show_user_profile(user_id):
         User.user_id,
         User.fname,
         User.lname
-        ).join(Attraction).join(User).filter(User.user_id == user_id).all()
+        ).join(Attraction
+        ).join(User
+        ).filter(User.user_id == user_id
+        ).all()
 
-    return render_template('user_profile.html', result=result, user_id=user_id)
+    return render_template('user_profile.html', result = result, user_id = user_id)
 
 @app.route('/user-profile/<int:user_id>', methods=['POST'])
 def delete_attractions(user_id):
@@ -164,6 +170,47 @@ def delete_attractions(user_id):
         delete_attraction(a_id)
 
     return redirect(f'/user-profile/{str(user_id)}')
+
+@app.route('/itinerary/<int:user_id>')
+def select_itinerary_parameters(user_id):
+
+    result = db.session.query(
+        Location.place_id,
+        Location.formatted_address,
+        Location.business_name,
+        Attraction.attraction_id,
+        Attraction.url,
+        Attraction.recommended_by,
+        User.user_id,
+        User.fname,
+        User.lname
+        ).join(Attraction
+        ).join(User
+        ).filter(User.user_id == user_id
+        ).all()
+
+    return render_template('itinerary.html', result = result, user_id = user_id)
+
+@app.route('/itinerary.json')
+def create_itinerary_from_parameters():
+    print(request.args)
+    user_id = session['user_id']
+    origin_place_id = request.args['origin_place_id']
+    print(origin_place_id)
+    hours = request.args['hours']
+    #print(hours)
+    days = request.args['days']
+    #print(days)
+
+    duration = (int(hours) * 3600) + (int(days) * 86400)
+    print(duration)
+
+
+    #print(origin_place_id, hours, days, duration)
+
+    itinerary = create_itinerary(user_id, origin_place_id, duration)
+
+    return jsonify(itinerary)
 
 # @app.route('/new-user')
 # def new_user():

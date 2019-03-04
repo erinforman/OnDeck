@@ -2,28 +2,29 @@
 
 function initMap() {
 
-  let myCenter = { lat: 37.601773, lng: -122.202870 };
-  //TODO: CHANGE CENTER DYNAMICALLY DEPENDING ON USER
-
-  let map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 3,
-      center: myCenter,
-      //center: new google.maps.LatLng(41.976816, -87.659916),
-  });
-  
-  let infoWindow = new google.maps.InfoWindow({
-        width: 150
-  });
 
   //Retrieve user locations with AJAX
   $.get('/get_map_coords.json', (results) => {
+
+      let myCenter = { lat: Number(results[results.length-1].lat), lng: Number(results[results.length-1].lng) };
+      console.log(results[results.length-1].lat)
+      console.log(results)
+
+
+  let map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 4,
+      center: myCenter,
+  });
+  
+  let infoWindow = new google.maps.InfoWindow({
+        maxWidth: 350
+  });
 
       let  position, html, html2
       let i = 1
   
       for (let location in results) {
 
-          //Add pin animation and drop delay
           window.setTimeout(function() {  
             
 
@@ -36,23 +37,21 @@ function initMap() {
                   });  
           
               html = ('<div class="window-content">' +
-                            '<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                            '<p><b>Name: </b>' + results[location].business_name+ '</p>' +
-                            '<p><b>URL: </b><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
-                            // <a href="https://www.w3schools.com/html/">Visit our HTML tutorial</a>
-                            //TODO: ADD IF EXISTS FOR RECOMMENDED BY
+                            //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                            '<h2><b>' + results[location].business_name+ '</b></h2>' +
+                            '<p><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
                             `${results[location].recommended_by 
                                   ?`<p><b>Recommended by: </b>${results[location].recommended_by}</p>`
                                    : ''
                               }` +
-                            '<p><b>Address: </b>' + results[location].formatted_address + '</p>' +
-                            '<p><i><b>Saved: </b>' + results[location].date_stamp + '</i></p>' +
+                            '<p>' + results[location].formatted_address + '</p>' +
+                            '<p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
                       '</div>');
               bindInfoWindow(marker, map, infoWindow, html);
         
-        }, i * 50);  
+        }, i * 10);  
 
-      i+=2
+      i+=1
     }
   });
 
@@ -63,6 +62,12 @@ function initMap() {
             infoWindow.open(map, marker);
         });
     }
+
+    $("#link1").click(function(){
+    changeMarkerPos(3.165759, 101.611416);
+});
+
+    
 }
 
 

@@ -8,15 +8,13 @@ gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 
 loc_1 = aliased(Location)
 loc_2 = aliased(Location)
-attr_1 = aliased(Attraction)
-attr_2 = aliased(Attraction)
+attrc_1 = aliased(Attraction)
+attrc_2 = aliased(Attraction)
 
 def write_distance_matrix_db(user_id, units='imperial'):
 
     """Retrieve all of a users location pairs for which there is
     not a trip logged"""
-
-    
   
     trips_leg_a = db.session.query(Location.place_id.label('origin_place_id'), 
         Location.lat.label('origin_lat'),
@@ -54,7 +52,8 @@ def write_distance_matrix_db(user_id, units='imperial'):
             (trip.dest_lat + ',' + trip.dest_lng), units = units)
          
         if duration_dict["rows"][0]['elements'][0].get('duration'):
-            """Includes trips that can only be road trips. Travel mode is driving."""
+            """Includes trips that can only be road trips. Travel mode is driving. 
+            Duration unit is seconds."""
             duration_sec = duration_dict["rows"][0]['elements'][0]['duration']['value']
 
             new_trips.append(Trip(origin_place_id = trip.origin_place_id, 
@@ -74,26 +73,25 @@ def get_next_trip(user_id, origin_place_id, excluded_destinations):
     """A trip means to travel between two points: an origin and a destination.
     An itinerary is made up of one or more trips."""
 
-    #Given a user id and origin, find how far away (in mins) the closest destination is
+    #Given a user id and origin, find how far away (in seconds) the closest destination is
 
     try:
         next_trip =  db.session.query(
             Trip.trip_id,
             Trip.duration,
             Trip.origin_place_id,
-            attr_1.url.label('url_1'),
+            attrc_1.url.label('url_1'),
             loc_1.business_name.label('business_name_1'),
             Trip.destination_place_id,
-            attr_2.url.label('url_2'), 
+            attrc_2.url.label('url_2'), 
             loc_2.business_name.label('business_name_2'),
-            ).join(attr_1, attr_1.place_id == Trip.origin_place_id
-            ).join(attr_2, attr_2.place_id == Trip.destination_place_id
+            ).join(attrc_1, attrc_1.place_id == Trip.origin_place_id
+            ).join(attrc_2, attrc_2.place_id == Trip.destination_place_id
             ).join(loc_1, loc_1.place_id == Trip.origin_place_id
             ).join(loc_2, loc_2.place_id == Trip.destination_place_id 
-            #).join(attrc_2, attrc_2.place_id == Trip.destination_place_id
             ).filter(
-                attr_1.user_id == user_id, 
-                attr_2.user_id == user_id,  
+                attrc_1.user_id == user_id, 
+                attrc_2.user_id == user_id,  
                 Trip.origin_place_id == origin_place_id,
                 #Don't return to places we've already been
                 (~Trip.destination_place_id.in_(excluded_destinations)),
@@ -118,7 +116,7 @@ def create_itinerary(user_id, origin_place_id, duration):
 
     """
     given a place_id for an origin and a length of time
-    in minutes, return an itinerary that takes up the
+    in seconds, return an itinerary that takes up the
     given length of time
     """
     Itinerary = namedtuple('Itinerary',['itinerary_seq', 'itinerary_details', 
@@ -140,12 +138,9 @@ def create_itinerary(user_id, origin_place_id, duration):
         #return(itinerary_seq, duration, time_left, duration-time_left)
         return("BLAAAAAAAH ****** No man is an island...or a car-less city")
 
-    #print('***1ZZZZZZZZZZZZZZZZZZZZZZ*****')
-
     if next_trip.duration > time_left:
         return(f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}')
 
-    #print('***2ZZZZZZZZZZZZZZZZZZZZZZ*****')
     while next_trip.duration <= time_left:
 
     #TODO: ADD BETTER HANDLING. IF THE USER SELECTS AN ORIGIN AND A TIME FRAME, WE SHOULD BE ABLE

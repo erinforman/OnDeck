@@ -5,16 +5,22 @@
 
 {% block content %}
 
+<a href="/user-profile/{{user.user_id}}">Manage my places</a>
+<br>
+<a href="/itinerary/{{user.user_id}}">Create an itinerary</a>
+<br>
+<a href="/">Log out</a>
+
     <p>{{ user.fname }} {{ user.lname }}, submit your travel URL here!</p>
 
     <body>
 
         <form action="/map/{{ user.user_id }}" method="post">
     <!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
-            Attraction URL* <input type="text" name="url" style="height: 50px; width: 400px"><br><br>
+            Attraction URL <input type="text" name="url" value = "https://www.newyorker.com/magazine/2018/06/18/koks-the-worlds-most-remote-foodie-destination" style="height: 50px; width: 550px; font-style:italic" required><br><br>
             <!--  TODO: MAKE THIS A BETTER NAME -->
-            Helper search terms <input type="text" name="helper_search_terms"><br>
-            Recommended by <input type="text" name="recommended_by"><br>
+            Helper search terms <input type="text" name="helper_search_terms" value = "faroe islands" style="font-style:italic"><br>
+            Recommended by <input type="text" name="recommended_by" value = "Éric Ripert" style="font-style:italic" ><br>
         <input type="submit">
         </form>
 
@@ -24,8 +30,8 @@
 
         <style>
           #map {
-             height: 800px;  /* The height is 400 pixels */
-             width: 100%;   /* The width is the width of the web page */
+             height: 800px;  
+             width: 100%;   
 /*             position: initial !important;
 */           }
         </style>
