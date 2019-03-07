@@ -8,13 +8,22 @@
 
 
     <p>{{ result[0].fname }}, create an itinerary!</p>
+                <!-- <select name='origin_texxxxting'> -->
+            <!--     <select name="cars" size="10">
+                {%for location in result%}
+                  <option value = '{{location["place_id"]}}'>{{ location['business_name'] }}</option>
+                  <br>
+                {% endfor %}
+                </select> -->
+              <!-- </select> -->
+
     <body>
         <form id = "itinerary_form">            
             Select a starting point:
             <br>
-            <select name='origin_place_id' >
+            <select name='origin_place_id' size = "8">
                 {%for location in result%}
-                    <option value='{{location["place_id"]}}''> {{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
+                 <option value='{{location["place_id"]}}'>{{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
                 {% endfor %}
             </select>
             <br>
@@ -85,12 +94,12 @@
         <div id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
         <br>
         <div id="legs">
-        {%for i in range(result|length + 1)%}
+    <!--     {%for i in range(result|length + 1)%}
             <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
             <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
             <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
             <br>
-        {% endfor %}
+        {% endfor %} -->
         </div>
 
         <div id="email_itinerary">
@@ -109,20 +118,24 @@
             <br>
             Your Name <input type='text' name='your_name'value='Monica Geller'>
             <input type="hidden" id="content" name="content">
+            <div id="legs">
+            
+              
+              
           
-                {%for i in range(result|length + 1)%}
+             <!--    {%for i in range(result|length + 1)%}
                     <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
                     <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
                     <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-                {% endfor %}
-           
+                {% endfor %} -->
+           </div>
             <input id='submit' type='submit'>
         </form>
 
           </div>
 
         </div>
-        <small>Please wait 1-2 to minutes before using a new location for an itinerary origin.
+        <small>Please wait 1-2 to minutes before using a new location in an itinerary.
            We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
         </small>
 

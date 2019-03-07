@@ -15,12 +15,14 @@
 
     <body>
 
-        <form action="/map/{{ user.user_id }}" method="post">
-    <!-- TODO: IS THIS ACTION ROUTE RIGHT? -->
-            Attraction URL <input type="text" name="url" value = "https://www.newyorker.com/magazine/2018/06/18/koks-the-worlds-most-remote-foodie-destination" style="height: 50px; width: 550px; font-style:italic" required><br><br>
-            <!--  TODO: MAKE THIS A BETTER NAME -->
-            Helper search terms <input type="text" name="helper_search_terms" value = "faroe islands" style="font-style:italic"><br>
-            Recommended by <input type="text" name="recommended_by" value = "Éric Ripert" style="font-style:italic" ><br>
+        <form id = "map_form" action="/map/{{ user.user_id }}" method="post">
+            Attraction URL <input id = "url" type="text" name="url" value = "https://www.newyorker.com/magazine/2018/06/18/koks-the-worlds-most-remote-foodie-destination" style="height: 50px; width: 550px; font-style:italic" required>
+            <br><br>
+            Helper search terms <input id = "helper_search_terms" type="text" name="helper_search_terms" value = "faroe islands" style="font-style:italic">
+            <br>
+            Recommended by <input id = "recommended_by" type="text" name="recommended_by" value = "Éric Ripert" style="font-style:italic" >
+             <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+            <br>
         <input type="submit">
         </form>
 

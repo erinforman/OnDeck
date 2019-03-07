@@ -1,85 +1,384 @@
 "use strict";
 
-function initMap() {
+
+// $.get('/get_latest_map_coords.json', (latest_results) => {
+
+//       $("#map_form").submit(function(){
+//     ;
+//   })
+//  });
+
+const userId = $('input[name="user_id"]').val();
 
 
-  //Retrieve user locations with AJAX
-  $.get('/get_map_coords.json', (results) => {
 
-      let myCenter = { lat: Number(results[results.length-1].lat), lng: Number(results[results.length-1].lng) };
-      console.log(results[results.length-1].lat)
-      console.log(results)
+function attachAddLocationHandler(map) {
+  $("#map_form").on("submit", evt => {
+
+    evt.preventDefault();
+
+    const form = $(evt.target);
+    let new_url = $('input[name="url"]').val()
+    let new_helper_search_terms = $('input[name="helper_search_terms"]').val()
+    let new_recommended_by = $('input[name="recommended_by"]').val()
+
+    const formValues = {
+      url: new_url,
+      helper_search_terms: new_helper_search_terms,
+      recommended_by: new_recommended_by
+    };
+
+    $.post(`/map/${userId}`, formValues, results => {
+
+      if ((typeof results) === "string"){
+        alert("We couldn't find an exact location for that URL. Mind adding search terms?")
+        window.stop()}
+
+      else if ('geometry' in results) {
 
 
-  let map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 4,
-      center: myCenter,
+      //   .post(`/map/${userId}`, formValues)
+
+      // }
+
+      // else if ('geometry' in results) {
+     
+  //  block of code to be executed if the condition is true
+    console.log(results)
+
+      let lat = results['geometry']['location']['lat'];
+      let lng = results['geometry']['location']['lng'];
+      let lastLatLng = new google.maps.LatLng(parseInt(lat), Number(lat));
+      // let myCenter = { lat: Number(lat), lng: Number(lng) };
+
+
+      let marker = new google.maps.Marker({
+      position: { lat, lng },
+      map: map,
+      animation: google.maps.Animation.DROP,
+          //icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABuwAAAbsBOuzj4gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVEiJ7ZS/SsNQFIe/k6hQEV06NI6ODi4FF6Pg4NRYqBpcHLWCL9BX8Bmq+AIREVt0KShYXIqDi7Mu/TMJCk42x8FG25hUQQWH/rZ7fh/3u2e5MMgXkbiivpweFU2sg2yBmoh6mMOH1vHFXRyrsCnCg1WqOrGCVnZ+xvc1r8KGKBOhWoFaIDP89ngUa5Wr7/f2CJqOfaSQ06AQblGmAUQoqrICJMPGMNstMEJw7o2VE8OQHYFC0KVK1e1UwkoZypIIxY8Xfma7MxQ1FNE91Yi557WBClBpOHa+Hxu5wV9kIBgIBoJ+ApExlGxwbGTsQitjT32H7am6Dw3H1s70HHROVEYifoFrFA9hN5qVmlW+nA3gyL8IZRHEVzhTkaKBPCr+GsoqkEZIx7HWk1nut8ENkBQ48H1/f/L06r7H67pm87m+gCFuR/YSx/446rqmuq75q5f+y7wCHwCLEN3o+6gAAAAASUVORK5CYII="
+      icon: "https://img.icons8.com/doodle/48/000000/marker.png"
+      });
+      const infoWindow = new google.maps.InfoWindow({ maxWidth: 350 });     
+      const html = ('<div class="window-content">' +
+                        //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        // '<h2><b>' + results[location].business_name+ '</b></h2>' +
+                        '<p><a href=' + new_url + '>' + new_url + '</a></p>' +
+                           `${new_recommended_by
+                              ?`<p><b>Recommended by: </b>${new_recommended_by}</p>`
+                               : ''
+                          }` +
+                        // '<p>' + results[location].formatted_address + '</p>' +
+                        // '<p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
+                  '</div>');
+      bindInfoWindow(marker, map, infoWindow, html);
+      marker.setMap(map)
+      map.setCenter({ lat, lng });
+      map.setZoom(7);
+       }
+    });
   });
-  
-  let infoWindow = new google.maps.InfoWindow({
-        maxWidth: 350
-  });
-
-      let  position, html, html2
-      let i = 1
-  
-      for (let location in results) {
-
-          window.setTimeout(function() {  
-            
-
-              let marker = new google.maps.Marker({  
-                  position: new google.maps.LatLng(results[location].lat, results[location].lng), 
-                  map: map,  
-                  animation: google.maps.Animation.DROP,
-                  icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAB2wAAAdsBV+WHHwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKuSURBVEiJ7ZZdSBRRFMf/586uq60fWUbqVvb9ENiTEOqu+lDgrmsgERQ9BhUVRREJhRRB0EPQQ9FT0UsQUVixWxIESk5GqBD4UCGSteaukVp+rB+7c08vamvujuPO4pN/GGY4c875zb137rkHWJFBhTwVxSFPRXGy8ZakyUJem3mqMw0OeEsdaazYdHlRmlj3ujXIZj56FswAhbyuuwCfkKQfIK2MscbHN8NNzzZpwb7vSYMZoND+ituQfDzr6GlYN2/TjxAC1l3FF6a7OmEKHKp1NUDyyZwz9ZSxrybZPEuWYGAUYJLjY8sGBQBLoa/1VsjrXDN6/85lOTxISsEG3QCy2ZBeXmUeDAD5frWh3+tSxhsf1QMQ+mTISKD3fKTnyyEz4EX+4cQKel3dAG834PqTGZ7Cl2pnrFF/dPr6YdAvTxCa+z3lJSkC86hBR8GAXQhq7vM4d6YAvBQxAKQriswxDWYg3aCrJIIGQl2Br63dNJiAHcYcOcpS1OX7VH+sOWGh73a7bVnW8AOA55UzFmJqVe3Bc5NvXgW0kT+fI8BhPa7IkJMbn7yb+N8eF9ztdtsyLeONUJRq+4Ejgmwxs6oIZOyteaj1fYNsb/MX+dVhPXAixQVnWsNPSVD16kvXha2kNJm8i2rBGnNVlQWE3SI3jy1bjNSHFIGppSUKokpt6Fdw6OKpyFTHe0x/7Ph3feoCpDQNTlgy+z1lRZSWpiIaXXBqZB87ey/c9KI8GujtKfCrtSkFA8Cge0/2lLDO2zaSpeawO7pCE8HnAJAsWLdvWtv0YQRAZ7x3Qa8zGd6clqlkroANNgIDNc6tknAVNO9gmF1kdc7CmCQSV/J9b78OeMtKmURlvk+9ES+noaacWdiJeL1kjp2h3zP33JhRaJBROwBohCxiciTK+ReCDuoEmNtNsAAAAABJRU5ErkJggg=='
-                  //<a href="https://icons8.com/icon/30567/map-pin">Map Pin icon by Icons8</a>
-                  });  
-          
-              html = ('<div class="window-content">' +
-                            //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                            '<h2><b>' + results[location].business_name+ '</b></h2>' +
-                            '<p><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
-                            `${results[location].recommended_by 
-                                  ?`<p><b>Recommended by: </b>${results[location].recommended_by}</p>`
-                                   : ''
-                              }` +
-                            '<p>' + results[location].formatted_address + '</p>' +
-                            '<p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
-                      '</div>');
-              bindInfoWindow(marker, map, infoWindow, html);
-        
-        }, i * 10);  
-
-      i+=1
-    }
-
-  
-  });
-
-    function bindInfoWindow(marker, map, infoWindow, html) {
-        google.maps.event.addListener(marker, 'click', function () {
-            infoWindow.close();
-            infoWindow.setContent(html);
-            infoWindow.open(map, marker);
-        });
-    }
-
-    $("#link1").click(function(){
-    changeMarkerPos(3.165759, 101.611416);
-});
-
-
- // make get request to new return from distance matrix
-     $.get('/calculate_trips', (return) => {
-      console.log(return)
-     });
-    
 }
 
 
 
+const styles = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ebe3cd"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#523735"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f1e6"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#c9b2a6"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#dcd2be"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#ae9e90"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#93817c"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#a5b076"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#447530"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f1e6"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#fdfcf8"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f8c967"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#e9bc62"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e98d58"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#db8555"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#806b63"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#8f7d77"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#ebe3cd"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dfd2ae"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#b9d3c2"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#92998d"
+      }
+    ]
+  }
+];
 
+function initMap() {
+
+  //Retrieve user locations with AJAX
+    const map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 4,
+    center: { lat: 72, lng: -140 },
+    styles: styles,
+  });
+
+  $.get('/get_map_coords.json', (results) => {
+    let  position, html2;
+    let i = 1;
+
+    for (let location in results) {
+      window.setTimeout(() => {
+        const infoWindow = new google.maps.InfoWindow({ maxWidth: 350 });
+        const marker = new google.maps.Marker({  
+          position: new google.maps.LatLng(results[location].lat, results[location].lng), 
+          map: map,  
+          animation: google.maps.Animation.DROP,
+          //icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABuwAAAbsBOuzj4gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVEiJ7ZS/SsNQFIe/k6hQEV06NI6ODi4FF6Pg4NRYqBpcHLWCL9BX8Bmq+AIREVt0KShYXIqDi7Mu/TMJCk42x8FG25hUQQWH/rZ7fh/3u2e5MMgXkbiivpweFU2sg2yBmoh6mMOH1vHFXRyrsCnCg1WqOrGCVnZ+xvc1r8KGKBOhWoFaIDP89ngUa5Wr7/f2CJqOfaSQ06AQblGmAUQoqrICJMPGMNstMEJw7o2VE8OQHYFC0KVK1e1UwkoZypIIxY8Xfma7MxQ1FNE91Yi557WBClBpOHa+Hxu5wV9kIBgIBoJ+ApExlGxwbGTsQitjT32H7am6Dw3H1s70HHROVEYifoFrFA9hN5qVmlW+nA3gyL8IZRHEVzhTkaKBPCr+GsoqkEZIx7HWk1nut8ENkBQ48H1/f/L06r7H67pm87m+gCFuR/YSx/446rqmuq75q5f+y7wCHwCLEN3o+6gAAAAASUVORK5CYII="
+          icon: "https://img.icons8.com/doodle/48/000000/marker.png"
+          //<a href="https://icons8.com/icon/30567/map-pin">Map Pin icon by Icons8</a>
+        });
+
+      
+        const html = ('<div class="window-content">' +
+                        //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        '<h2><b>' + results[location].business_name+ '</b></h2>' +
+                        '<p><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
+                        `${results[location].recommended_by 
+                              ?`<p><b>Recommended by: </b>${results[location].recommended_by}</p>`
+                               : ''
+                          }` +
+                        '<p>' + results[location].formatted_address + '</p>' +
+                        '<p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
+                  '</div>');
+        bindInfoWindow(marker, map, infoWindow, html);
+      }, i * 10);  
+
+      i += 1;
+    }
+    // let lastLatLng = new google.maps.LatLng(results[results.length -1]["lat"], results[results.length -1]["lng"]);
+    // $("#map_form").submit(function() {map.setCenter(lastLatLng)});
+    attachAddLocationHandler(map);
+
+  });
+
+    // function changeCenter(lastLatLng,map) {
+    //   $("#map_form").submit(function() {
+    //   map.setCenter(lastLatLng)
+    //   })
+    // }
+
+// google.maps.event.addListener(marker,'click',function() {
+//   map.setZoom(9);
+//   map.setCenter(marker.getPosition());
+// });
+
+
+
+
+
+//     $("#link1").click(function(){
+//     changeMarkerPos(3.165759, 101.611416);
+// });
+
+
+ //make get request to new return from distance matrix
+     // $.get('/calculate_trips', () => {
+     // });
+}
+
+function bindInfoWindow(marker, map, infoWindow, html) {
+  google.maps.event.addListener(marker, 'click', () => {
+    infoWindow.close();
+    infoWindow.setContent(html);
+    infoWindow.open(map, marker);
+    // map.setCenter(marker.getPosition());;
+  });
+}
 
     
 

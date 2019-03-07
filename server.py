@@ -34,6 +34,8 @@ def check_valid_login():
     email = request.form['email']
     password = request.form['password']
     user = User.query.filter(User.email == email).first()
+    session['fname'] = user.fname
+    session['lname'] = user.lname
     
     """email address not found in db"""
     if not user:
@@ -72,15 +74,21 @@ def find_attraction_location(user_id):
 
     result = search_url(url, helper_search_terms)
 
+    if session.get('result'):
+        session.pop('result')
+
     if result.match_type == 'exact':
+        session['result'] = result.location
         add_exact_match(result.location, user_id, url, recommended_by)
-        return redirect(f'/map/{str(user_id)}')
+        return jsonify(result.location)
+        # return redirect(f'/map/{str(user_id)}')
     else:
         result = search_cleaned_url(url, helper_search_terms) 
 
         if result.match_type == 'exact':
+            session['result'] = result.location
             add_exact_match(result.location, user_id, url, recommended_by)
-            return redirect(f'/map/{str(user_id)}')
+            return jsonify(result.location)
         elif result.match_type == 'multi_match':
             return redirect(url_for('choose_correct_location', 
                 user_id=user_id, 
@@ -93,6 +101,16 @@ def find_attraction_location(user_id):
             return redirect(f'/map/{str(user_id)}')
 
 
+# @app.route('/get_latest_map_coords.json')
+# def create_updated_map():
+#     """New JSON info about map."""
+#     result = session['result']
+
+#     lat = result['geometry']['location']['lat']
+#     lng = result['geometry']['location']['lng']
+
+#     return jsonify(result)
+
 @app.route('/map/<int:user_id>/search-results')
 def choose_correct_location(user_id):
 
@@ -100,7 +118,6 @@ def choose_correct_location(user_id):
 
     for location in result:
         location['business_name'] = search_business_name(location['place_id'])
-        #business name comes from a different API: Google Places
 
     url = request.args.get('url')
     recommended_by = request.args.get('recommended_by')
@@ -114,6 +131,8 @@ def add_correct_location(user_id):
     url= request.form['url']
     recommended_by = request.form['recommended_by']
     location = ast.literal_eval(request.form.get('location'))
+
+    session['result'] = location
 
     add_exact_match(location, user_id, url, recommended_by)
 
@@ -151,7 +170,11 @@ def create_map():
             ).all()
     ]
 
-    return jsonify(user_details)
+    return(jsonify(user_details))
+    # return jsonify({
+    #     "user_details": user_details,
+    #     "map_center":
+    # })
 
 @app.route('/user-profile/<int:user_id>')
 def show_user_profile(user_id):
@@ -198,7 +221,7 @@ def select_itinerary_parameters(user_id):
         ).join(Attraction
         ).join(User
         ).filter(User.user_id == user_id
-        ).all()
+        ).order_by(Location.business_name).all()
 
     return render_template('itinerary.html', result = result, user_id = user_id)
 
@@ -214,10 +237,11 @@ def create_itinerary_from_parameters():
     duration = (int(hours) * 3600) + (int(days) * 86400)
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
+    print(itinerary)
+    print(itinerary.itinerary_details)
 
     session['itinerary_details'] = itinerary.itinerary_details
 
-    
 
     return jsonify(itinerary)
 
@@ -226,6 +250,8 @@ def create_itinerary_from_parameters():
 def email_itinerary(user_id):
 
     itinerary_details = session['itinerary_details']
+    fname = session['fname']
+    lname = session['lname']
 
     #TODO ADD IN MORE ITINERARY DETAILS IN THE EMAIL. 
 
@@ -234,11 +260,15 @@ def email_itinerary(user_id):
     for i, trip in enumerate(itinerary_details, start=1):
         content = content + str(i) + ') <a href="' + trip[3] + '">' + trip[4] + '</a>' + "<br/>"
     
+    #Add final destination
+    content = content + str(len(itinerary_details)+1) + ') <a href="' + itinerary_details[-1][6] + '">' + itinerary_details[-1][7] + '</a>' + "<br/>"
 
+
+    
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
     from_email = Email(session['user_email'])
     to_email = Email(request.form.get('to_email'))
-    subject = 'A friend sent you an itinerary CHANGE THIS'
+    subject = f'Join {fname} {lname} on a trip!'
     content = Content("text/html", content)
     # content = Content("text/plain", 'this is where the itinerary will go')
     mail = Mail(from_email, subject, to_email, content)
