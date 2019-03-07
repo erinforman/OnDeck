@@ -77,7 +77,7 @@ function attachAddLocationHandler(map) {
       map.setZoom(7);
        }
     });
-  });
+  }); 
 }
 
 
