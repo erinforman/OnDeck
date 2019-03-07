@@ -77,7 +77,7 @@ function attachAddLocationHandler(map) {
       map.setZoom(7);
        }
     });
-  });  
+  });
 }
 
 
@@ -302,8 +302,8 @@ function initMap() {
 
   //Retrieve user locations with AJAX
     const map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 4,
-    center: { lat: 72, lng: -140 },
+    zoom: 2,
+    center: { lat: 39, lng: -98 },
     styles: styles,
   });
 

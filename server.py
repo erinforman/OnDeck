@@ -90,12 +90,14 @@ def find_attraction_location(user_id):
             add_exact_match(result.location, user_id, url, recommended_by)
             return jsonify(result.location)
         elif result.match_type == 'multi_match':
-            return redirect(url_for('choose_correct_location', 
-                user_id=user_id, 
-                url=url,
-                recommended_by=recommended_by,
-                result=result, 
-                ))
+            return result
+
+            # redirect(url_for('choose_correct_location', 
+            #     user_id=user_id, 
+            #     url=url,
+            #     recommended_by=recommended_by,
+            #     result=result, 
+            #     ))
         else:
             flash('No results. Try adding details like city or attraction name to help the search out.')
             return redirect(f'/map/{str(user_id)}')
