@@ -38,25 +38,20 @@ def check_valid_login():
     email = request.form['email']
     password = request.form['password']
     user = User.query.filter(User.email == email).first()
-    if user:
-        session['fname'] = user.fname
-        session['lname'] = user.lname
     
     """email address not found in db"""
     if not user:
         flash('We do not recognize that e-mail address. New user? Register!')
-        return redirect('/')
-        #TODO: HANDLE NEW USER REGISTRATION
-    
-    """email address found in db but pw doesn't match"""     
-    if password != user.password:
+        return redirect('/')  
+    elif password != user.password:
         flash('Incorrect password')
         return redirect('/')
-
-    """valid login"""
-    session['user_id'] = user.user_id
-    session['user_email'] = email
-    return redirect(f'/map/{user.user_id}')
+    else:
+        session['user_id'] = user.user_id
+        session['user_email'] = email
+        session['fname'] = user.fname
+        session['lname'] = user.lname
+        return redirect(f'/map/{user.user_id}')
 
     
 @app.route('/map/<int:user_id>')
@@ -197,7 +192,7 @@ def show_user_profile(user_id):
         ).join(Attraction
         ).join(User
         ).filter(User.user_id == user_id
-        ).all()
+        ).order_by(Location.business_name).all()
 
     return render_template('user_profile.html', result = result, user_id = user_id)
 
@@ -205,6 +200,9 @@ def show_user_profile(user_id):
 def delete_attractions(user_id):
 
     attraction_ids = request.form.getlist('check_list')
+
+    if not attraction_ids:
+        flash('Select at least one location.', 'error')
 
     for a_id in attraction_ids:
         delete_attraction(a_id)
@@ -243,13 +241,21 @@ def create_itinerary_from_parameters():
     duration = (int(hours) * 3600) + (int(days) * 86400)
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
+
     print(itinerary)
-    print(itinerary.itinerary_details)
 
-    session['itinerary_details'] = itinerary.itinerary_details
-
-
-    return jsonify(itinerary)
+    if duration == 0:
+        flash('Enter how much time you have for your trip')
+        return redirect(url_for(select_itinerary_parameters, user_id = user_id))
+    elif itinerary[0] == 'need_more_time':
+        extend_trip_by = itinerary[1].duration - duration
+        next_destination = itinerary[1].business_name_2
+        flash(f'Add {extend_trip_by} more time to get to  {next_destination}')
+        # flash('No results. Try adding details like city or attraction name to help the search out.')
+        return jsonify(itinerary)
+    else:
+        session['itinerary_details'] = itinerary.itinerary_details
+        return jsonify(itinerary)
 
 
 @app.route('/itinerary/<int:user_id>', methods=['POST'])

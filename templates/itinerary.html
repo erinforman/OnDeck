@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
-
 {% block title %}Itineraries!{% endblock %}
 
 {% block content %}
 
 
 
-    <p>{{ result[0].fname }}, create an itinerary!</p>
+
                 <!-- <select name='origin_texxxxting'> -->
             <!--     <select name="cars" size="10">
                 {%for location in result%}
@@ -18,73 +17,31 @@
               <!-- </select> -->
 
     <body>
+      <div id="need_more_time_alert">
+      </div>
         <form id = "itinerary_form">            
             Select a starting point:
             <br>
             <select name='origin_place_id' size = "8">
-                {%for location in result%}
+              <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }} - - - - - ({{ result[0]['formatted_address'] }})</option>
+              {%for location in result[1:]%}
                  <option value='{{location["place_id"]}}'>{{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
-                {% endfor %}
+              {% endfor %}
             </select>
+            <small>
+    Please wait 1-2 to minutes before using a new location in an itinerary.
+    We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
+ </small>
+ <br>
             <br>
-            <br>
-            Enter trip duration:
-            <br>
-            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00'>
+            How much time do you have for your next trip? <br>
+            
+            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
             Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
             <br>
             <br>
             <input id='submit' type='submit'>
         </form>
-
-
-
-
-
-<style>
-{font-family: Arial, Helvetica, sans-serif;}
-
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaaaaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-</style>
-
-
 
 
         <br>
@@ -102,10 +59,7 @@
         {% endfor %} -->
         </div>
 
-        <div id="email_itinerary">
-            
-
-        </div>
+        <div id="email_itinerary"></div>
 
         <div id="myModal" class="modal">
 
@@ -113,31 +67,15 @@
           <div class="modal-content">
             <span class="close">&times;</span>
             <form id = "email_form" action="/itinerary/{{ user_id }}" method="POST">          
-            Recipient Email <input type='text' name='to_email' value='rachel@bloomingdales.com'>
-            <br>
-            <br>
-            Your Name <input type='text' name='your_name'value='Monica Geller'>
-            <input type="hidden" id="content" name="content">
-            <div id="legs">
-            
-              
-              
-          
-             <!--    {%for i in range(result|length + 1)%}
-                    <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-                    <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-                    <div id="itinerary_duration_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
-                {% endfor %} -->
-           </div>
-            <input id='submit' type='submit'>
-        </form>
-
+              Recipient Email <input type='text' name='to_email' value='rachel@bloomingdales.com'><br><br>
+              Your Name <input type='text' name='your_name'value='Monica Geller'>
+              <input type="hidden" id="content" name="content">
+              <input id='submit' type='submit'>
+            </form>
           </div>
 
         </div>
-        <small>Please wait 1-2 to minutes before using a new location in an itinerary.
-           We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
-        </small>
+       
 
     </body>
 

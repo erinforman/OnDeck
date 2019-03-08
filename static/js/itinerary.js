@@ -31,13 +31,34 @@ return dDisplay + hDisplay + mDisplay;
 
 function showResults(results) {
 
+
+  $("#email_itinerary").empty();
+  $("#itinerary_duration").empty();
+  $("#itinerary_time_left").empty();
+  $("#need_more_time_alert").empty();
+
+
+  if (results[0] === 'need_more_time') {
+    console.log('hi');
+    $('#need_more_time_alert').html(`
+ 
+  <div class="alert alert-warning ">
+   <strong>Warning!</strong> Indicates a warning that might need attention.
+</div>
+`);
+
+
+
+    }
+  else {
+
   $('#itinerary').html('');
 
   $('#email_itinerary').html('<button id="email_itinerary_btn">Email Itinerary</button>')
   $('#itinerary_duration').html('Itinerary length: ' + secondsToDhm(results[4])+ '<br>'+((results[4]/results[2])*100).toFixed(1) + '% of available time used')
   $('#itinerary_time_left').html(secondsToDhm(results[3]) + ' time left')
 
- $("#legs").empty()
+ $("#legs").empty();
 
  $('#legs').append(`
     <div id=itinerary_destination_urlhyper_0 style= 'display: inline-block; padding: 5px;'></div>Origin <a href= '${results[1][0][3]}'>${results[1][0][4]}</a><br>
@@ -75,7 +96,7 @@ function showResults(results) {
 
   `);
 
-
+}
 
 }
 
