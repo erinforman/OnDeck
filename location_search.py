@@ -81,8 +81,8 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
         db.session.add(new_location)
         db.session.commit()
 
-    if existing_location_other_users:
-        flash(f'Someone else added fun stuff at {formatted_address} Check it out <here>.')
+    # if existing_location_other_users:
+    #     flash(f'Someone else added fun stuff at {formatted_address} Check it out <here>.')
 
     if not existing_attraction:
             dt = datetime.datetime.now().date()

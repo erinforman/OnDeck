@@ -17,19 +17,15 @@ app = Flask(__name__)
 
 app.secret_key = os.environ.get('APP_KEY')
 GOOGLE_KEY = os.environ.get('GOOGLE_KEY')
-GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 @app.route('/')
 def index():
     """Show homepage and login form."""
-
-    #TODO: handle scenario where user is already logged in and lands on homepage
-
     if session:
         session.clear()
 
-    return render_template('homepage.html', GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID)
+    return render_template('homepage.html')
  
 @app.route('/login', methods=['POST'])
 def check_valid_login():
@@ -41,8 +37,9 @@ def check_valid_login():
     
     """email address not found in db"""
     if not user:
+        print('FLASH not a user"')
         flash('We do not recognize that e-mail address. New user? Register!')
-        return redirect('/')  
+        return render_template('homepage.html') 
     elif password != user.password:
         flash('Incorrect password')
         return redirect('/')
@@ -245,11 +242,10 @@ def create_itinerary_from_parameters():
     print(itinerary)
 
     if duration == 0:
-        flash('Enter how much time you have for your trip')
-        return redirect(url_for(select_itinerary_parameters, user_id = user_id))
+        return jsonify(itinerary)
     elif itinerary[0] == 'need_more_time':
-        extend_trip_by = itinerary[1].duration - duration
-        next_destination = itinerary[1].business_name_2
+        return jsonify(itinerary)
+    elif itinerary[0] == 'no_trips':
         return jsonify(itinerary)
     else:
         session['itinerary_details'] = itinerary.itinerary_details

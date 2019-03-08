@@ -136,7 +136,8 @@ def create_itinerary(user_id, origin_place_id, duration):
 
     if next_trip == None:
         #return(itinerary_seq, duration, time_left, duration-time_left)
-        return("BLAAAAAAAH ****** No man is an island...or a car-less city")
+        return('no_trips', next_trip)
+        # BLAAAAAAAH ****** No man is an island...or a car-less city")
 
     if next_trip.duration > time_left:
         # return((f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}'))

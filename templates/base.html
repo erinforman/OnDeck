@@ -50,18 +50,17 @@
 
 <!-- Flash messages -->
 
-
-
-
   <body>
-
 
     <div class="container">
       {% for msg in get_flashed_messages() %}
-        <div class="alert alert-info">{{ msg }}</div>
+        <div class="alert alert-danger show">{{ msg }}</div>
       {% endfor %}
 
-      {% block content %}CONTENT HERE{% endblock %}
+    </div>
+
+    <div class="container">
+    {% block content %}CONTENT HERE{% endblock %}
     </div>
 
   </body>

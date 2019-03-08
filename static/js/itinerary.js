@@ -31,26 +31,30 @@ return dDisplay + hDisplay + mDisplay;
 
 function showResults(results) {
 
+  console.log(results)
+
   $("#email_itinerary").empty();
   $("#itinerary_duration").empty();
   $("#itinerary_time_left").empty();
-  $("#need_more_time_alert").empty();
+  $("#itinerary_alert").empty();
   $("#legs").empty();
 
-
-  if (results[0] === 'need_more_time') {
-    $('#need_more_time_alert').html(`
- 
-  <div class="alert alert-warning ">
-   <strong>Extend</strong> your trip by <strong>${secondsToDhm(results[1][1]-results[2])}</strong> to get to <strong>${results[1][7]} 
-</div>
-`);
-
-// the time it takes to get from buffalo to toronto - 3 hr - results[1][1]
-// minus the time you gave for your trip wndw - 1 hr - results[3]
-// return 2 hr
-
+  if (results[0] === 'need_more_time' || results[3] === 0) {
+    $('#itinerary_alert').html(`<div class="alert alert-primary ">
+      <strong>Extend</strong> your trip by <strong>${secondsToDhm(results[1][1]-results[2])}</strong> 
+      to get to <strong>${results[1][7]} </div>
+      `);
     }
+
+  else if (results[0] === 'no_trips') {
+
+    $('#itinerary_alert').html(`<div class="alert alert-warning ">
+      <strong>Yikes</strong> You cannot drive from this origin to any of your saved locations. Save more locations 
+      or select a different origin.</div>
+    `);
+
+  }
+
   else {
 
   $('#itinerary').html('');
@@ -77,18 +81,6 @@ function showResults(results) {
 
   $('#itinerary').append('Origin: ' + results[4]);
 
-// $.each( results[1], function( i,l ){
-//   $('#itinerary').append(`
-//     <p>Leg ${Number(i+1)}</p>
-//   `);
-
-  // $('#itinerary_origin_' + i).append('Origin: ' + l[4]);
-  // $('#itinerary_origin_url_' + i).append(l[3]);
-  // $('#itinerary_origin_urlhyper_' + i).html('Leg ' + Number(i+1)+': ' + '<a href="'+l[3]+'">'+l[4]+'</a>  >> ');
-  // $('#itinerary_destination_urlhyper_' + i).html('<a href="'+l[6]+'">'+l[7]+'</a>');
-  // $('#itinerary_duration_' + i).html(secondsToDhm(l[1]));
-  // $('#itinerary_destination_' + i).append('Destination: ' + l[7]);
-  // $('#itinerary_destination_url_' + i).append(l[6]);
 });
 
 
@@ -105,32 +97,6 @@ function showResults(results) {
 $("#itinerary_form").on("submit", getItinerary);
 
 
-// function emailItinerary() {
-
-// // Get the modal
-// var modal = document.getElementById('myModal');
-
-// // Get the button that opens the modal
-// // var btn = document.getElementById("email_itinerary");
-
-// // Get the <span> element that closes the modal
-// var span = document.getElementsByClassName("close")[0];
-
-// // When the user clicks the button, open the modal 
-
-// modal.style.display = "block";
-
-// // When the user clicks on <span> (x), close the modal
-// span.onclick = function() {
-//   modal.style.display = "none";
-// }
-
-
-
-// }
-
-
-// $("#email_itinerary").on("click", emailItinerary)
 
 
 $("#email_itinerary").click(function () {
