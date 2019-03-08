@@ -79,6 +79,18 @@ class Attraction(db.Model):
         date_stamp={self.date_stamp}>"
 
 
+    def example_data_attraction():
+        """Create example data for the test database."""
+        # FIXME: write a function that creates a game and adds it to the database.
+        # attraction = Game(name="Power Grid",
+        #             description="supply the most cities with power")
+        # db.session.add(game)
+        # db.session.commit()
+        # print("FIXME")
+
+        pass
+
+
 class Trip(db.Model):
     """Distances between Locations assigned to attractions on website."""
 
