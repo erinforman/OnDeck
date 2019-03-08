@@ -140,7 +140,7 @@ def create_itinerary(user_id, origin_place_id, duration):
 
     if next_trip.duration > time_left:
         # return((f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}'))
-        return('need_more_time',next_trip)
+        return('need_more_time',next_trip,duration)
 
     while next_trip.duration <= time_left:
 

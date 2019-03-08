@@ -31,23 +31,24 @@ return dDisplay + hDisplay + mDisplay;
 
 function showResults(results) {
 
-
   $("#email_itinerary").empty();
   $("#itinerary_duration").empty();
   $("#itinerary_time_left").empty();
   $("#need_more_time_alert").empty();
+  $("#legs").empty();
 
 
   if (results[0] === 'need_more_time') {
-    console.log('hi');
     $('#need_more_time_alert').html(`
  
   <div class="alert alert-warning ">
-   <strong>Warning!</strong> Indicates a warning that might need attention.
+   <strong>Extend</strong> your trip by <strong>${secondsToDhm(results[1][1]-results[2])}</strong> to get to <strong>${results[1][7]} 
 </div>
 `);
 
-
+// the time it takes to get from buffalo to toronto - 3 hr - results[1][1]
+// minus the time you gave for your trip wndw - 1 hr - results[3]
+// return 2 hr
 
     }
   else {

@@ -250,8 +250,6 @@ def create_itinerary_from_parameters():
     elif itinerary[0] == 'need_more_time':
         extend_trip_by = itinerary[1].duration - duration
         next_destination = itinerary[1].business_name_2
-        flash(f'Add {extend_trip_by} more time to get to  {next_destination}')
-        # flash('No results. Try adding details like city or attraction name to help the search out.')
         return jsonify(itinerary)
     else:
         session['itinerary_details'] = itinerary.itinerary_details
