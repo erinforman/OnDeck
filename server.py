@@ -26,16 +26,21 @@ def index():
 
     #TODO: handle scenario where user is already logged in and lands on homepage
 
+    if session:
+        session.clear()
+
     return render_template('homepage.html', GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID)
  
 @app.route('/login', methods=['POST'])
 def check_valid_login():
     """Check if login info is valid"""
+
     email = request.form['email']
     password = request.form['password']
     user = User.query.filter(User.email == email).first()
-    session['fname'] = user.fname
-    session['lname'] = user.lname
+    if user:
+        session['fname'] = user.fname
+        session['lname'] = user.lname
     
     """email address not found in db"""
     if not user:
@@ -51,7 +56,6 @@ def check_valid_login():
     """valid login"""
     session['user_id'] = user.user_id
     session['user_email'] = email
-    flash('Logged in')
     return redirect(f'/map/{user.user_id}')
 
     

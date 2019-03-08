@@ -6,6 +6,8 @@
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+
 
     <title>{% block title %}TITLE HERE{% endblock %}</title>
     <!-- <link rel="stylesheet"
@@ -13,6 +15,26 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/static/css/party.css"> -->
+<!--     BOOTSTRAP START -->
+{% if session['user_id']f %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="/map/{{ session['user_id'] }}">Map <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="/user-profile/{{ session['user_id'] }}">Manage Places</a>
+      <a class="nav-item nav-link" href="/itinerary/{{ session['user_id'] }}">Itineraries</a>
+      <a class="nav-item nav-link" href="/">Log Out</a>
+    </div>
+  </div>
+</nav>
+
+{% endif %}
+<!--     BOOTSTRAP END -->
   </head>
 
   <body>
