@@ -37,12 +37,13 @@ def check_valid_login():
     
     """email address not found in db"""
     if not user:
-        print('FLASH not a user"')
+        session.pop('_flashes', None)
         flash('We do not recognize that e-mail address. New user? Register!')
         return render_template('homepage.html') 
     elif password != user.password:
+        session.pop('_flashes', None)
         flash('Incorrect password')
-        return redirect('/')
+        return render_template('homepage.html') 
     else:
         session['user_id'] = user.user_id
         session['user_email'] = email

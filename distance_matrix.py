@@ -125,7 +125,7 @@ def create_itinerary(user_id, origin_place_id, duration):
     itinerary_seq = []
     itinerary_details = []
     excluded_destinations = set()
-    #no_repeats = set()
+
     #Keep track of duration requested and time left separately
     time_left = duration
     next_trip = get_next_trip(user_id, origin_place_id, excluded_destinations)
@@ -137,16 +137,12 @@ def create_itinerary(user_id, origin_place_id, duration):
     if next_trip == None:
         #return(itinerary_seq, duration, time_left, duration-time_left)
         return('no_trips', next_trip)
-        # BLAAAAAAAH ****** No man is an island...or a car-less city")
 
     if next_trip.duration > time_left:
         # return((f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}'))
         return('need_more_time',next_trip,duration)
 
     while next_trip.duration <= time_left:
-
-    #TODO: ADD BETTER HANDLING. IF THE USER SELECTS AN ORIGIN AND A TIME FRAME, WE SHOULD BE ABLE
-    #TO PRE-WARN THEM THAT THEY NEED TO WIDEN THEIR TIME FRAME OR ADD MORE LOCATIONS NEARBY
 
         #Add origin to no repeats set
         excluded_destinations.add(next_trip.origin_place_id)

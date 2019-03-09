@@ -61,7 +61,7 @@ function attachAddLocationHandler(map) {
       });
       const infoWindow = new google.maps.InfoWindow({ maxWidth: 350 });     
       const html = ('<div class="window-content">' +
-                        //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        // '<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
                         // '<h2><b>' + results[location].business_name+ '</b></h2>' +
                         '<p><a href=' + new_url + '>' + new_url + '</a></p>' +
                            `${new_recommended_by
@@ -326,6 +326,8 @@ function initMap() {
       
         const html = ('<div class="window-content">' +
                         //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        '<img src="https://static01.nyt.com/images/2017/11/14/t-magazine/tmag-capferret-slide-KFLI/tmag-capferret-slide-KFLI-facebookJumbo.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        
                         '<h2><b>' + results[location].business_name+ '</b></h2>' +
                         '<p><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
                         `${results[location].recommended_by 

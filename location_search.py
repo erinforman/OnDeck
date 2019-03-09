@@ -110,6 +110,12 @@ def search_business_name(place_id):
     place = gmaps.place(place_id, fields=['name'])
     return place['result']['name']
 
+def search_photo(url):
+    """Scrape of url page source for photo link."""
+
+    place = gmaps.place(place_id, fields=['name'])
+    return place['result']['name']
+
 
 def delete_attraction(attraction_id):
 
