@@ -1,13 +1,8 @@
-"""Models and database functions for HB Final Travel Project."""
-#import sys, datetime
+"""Models and database functions"""
 from flask_sqlalchemy import SQLAlchemy
-#from sqlalchemy.sql import func
-
 
 db = SQLAlchemy()
 
-
-##############################################################################
 # Model definitions
 
 class User(db.Model):
@@ -60,13 +55,17 @@ class Attraction(db.Model):
     __tablename__ = "attractions" #fact
 
     attraction_id = db.Column(db.Integer, autoincrement=True, primary_key=True) 
-    #generated when a user adds a link to an attraction to their map
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     place_id = db.Column(db.String(64), db.ForeignKey('locations.place_id'))
     url = db.Column(db.String(200), nullable=False) 
     recommended_by = db.Column(db.String(100), nullable=True) 
     date_stamp = db.Column(db.String(64))
-
+    url_img = db.Column(db.String(200), nullable=True)
+    url_title = db.Column(db.String(200), nullable=True)
+    url_head_title = db.Column(db.String(200), nullable=True)
+    url_author = db.Column(db.String(200), nullable=True)
+    url_site_name = db.Column(db.String(200), nullable=True)
+    url_twitter = db.Column(db.String(200), nullable=True)
 
     user = db.relationship("User", backref=db.backref("attractions", order_by=attraction_id))
     location = db.relationship("Location", backref=db.backref("attractions", order_by=attraction_id)) 

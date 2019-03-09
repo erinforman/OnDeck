@@ -49,31 +49,3 @@ def search_url_twitter(url):
 
     if metatag_twitter:
         return metatag_twitter["content"]
-
-
-
-# metatag_img = bs.find("meta", {"property": "og:image"})
-# metatag_title = bs.find("meta", {"property": "og:title"})
-# metatag_head_title = bs.find("title")
-# metatag_author = bs.find("meta", {"property": "article:author"})
-# metatag_site_name = bs.find("meta", {"property": "og:site_name"})
-# metatag_twitter = bs.find("meta", {"name": "twitter:domain"})
-
-
-# if metatag_img is not None:
-#     print (metatag_img["content"])
-
-# if metatag_title is not None:
-#     print (metatag_title["content"])
-
-# if metatag_head_title is not None:
-#     print (metatag_head_title)
-
-# if metatag_author is not None:
-#     print (metatag_author["content"])
-
-# if metatag_site_name is not None:
-#     print (metatag_site_name["content"])
-
-# if metatag_twitter is not None:
-#     print (metatag_twitter["content"])
