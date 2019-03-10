@@ -82,9 +82,6 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
         db.session.add(new_location)
         db.session.commit()
 
-    # if existing_location_other_users:
-    #     flash(f'Someone else added fun stuff at {formatted_address} Check it out <here>.')
-
     if not existing_attraction:
             dt = datetime.datetime.now().date()
             
@@ -95,7 +92,7 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
                 date_stamp = dt.strftime('%Y-%m-%d'),
                 url_img = search_url_image(url),
                 url_title = search_url_title(url),
-                url_head_title = search_url_head_title(url),
+                url_head_title = str(search_url_head_title(url)),
                 url_author = search_url_author(url),
                 url_site_name = search_url_site_name(url),
                 url_twitter = search_url_twitter(url)
@@ -104,7 +101,7 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
             db.session.add(new_attraction)
             db.session.commit()
 
-            flash(f'Exact location match! {business_name} at {formatted_address} added to map.')
+            # flash(f'Exact location match! {business_name} at {formatted_address} added to map.')
 
     else:
         flash(f'{business_name} is already on your map.')

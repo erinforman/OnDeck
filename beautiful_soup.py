@@ -6,46 +6,68 @@ from bs4 import BeautifulSoup
 
 def beautiful_soup(url):
 
-    return BeautifulSoup(urlopen(url),features="html.parser")
+    try:
+        bs_url_open = BeautifulSoup(urlopen(url),features="html.parser")
+    except:
+        return
+    else:
+        return bs_url_open
 
 def search_url_image(url):
 
-    metatag_img = beautiful_soup(url).find("meta", {"property": "og:image"})
-
-    if metatag_img:
-        return metatag_img["content"]
+    try:
+        metatag_img = beautiful_soup(url).find("meta", {"property": "og:image"})
+        url_image = metatag_img["content"]
+    except:
+        return
+    else:
+        return url_image
 
 def search_url_title(url):
 
-    metatag_title = beautiful_soup(url).find("meta", {"property": "og:title"})
-
-    if metatag_title:
-        return metatag_title["content"]
+    try:
+        metatag_title = beautiful_soup(url).find("meta", {"property": "og:title"})
+        url_title = metatag_title["content"]
+    except:
+        return
+    else:
+        return url_title
 
 def search_url_head_title(url):
 
-    metatag_head_title = beautiful_soup(url).find("title")
-    
-    if metatag_head_title:
+    try:
+        metatag_head_title = beautiful_soup(url).find("title")
+    except:
+        return
+    else:
         return metatag_head_title 
 
 def search_url_author(url):
 
-    metatag_author = beautiful_soup(url).find("meta", {"property": "article:author"})
-
-    if metatag_author:
-        return metatag_author["content"]
+    try:
+        metatag_author = beautiful_soup(url).find("meta", {"property": "article:author"})
+        url_author = metatag_author["content"]
+    except:
+        return
+    else:
+        return metatag_author
 
 def search_url_site_name(url):
 
-    metatag_site_name = beautiful_soup(url).find("meta", {"property": "og:site_name"})
-
-    if metatag_site_name:
-        return metatag_site_name["content"]
+    try:
+        metatag_site_name = beautiful_soup(url).find("meta", {"property": "og:site_name"})
+        url_site_name = metatag_site_name["content"]
+    except:
+        return
+    else:
+        return url_site_name
 
 def search_url_twitter(url):
 
-    metatag_twitter = beautiful_soup(url).find("meta", {"name": "twitter:domain"})
-
-    if metatag_twitter:
-        return metatag_twitter["content"]
+    try:
+        metatag_twitter = beautiful_soup(url).find("meta", {"name": "twitter:domain"})
+        url_twitter = metatag_twitter["content"]
+    except:
+        return
+    else:
+        return url_twitter

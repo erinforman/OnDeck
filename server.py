@@ -78,25 +78,20 @@ def find_attraction_location(user_id):
         session['result'] = result.location
         add_exact_match(result.location, user_id, url, recommended_by)
         return jsonify(result.location)
-        # return redirect(f'/map/{str(user_id)}')
     else:
         result = search_cleaned_url(url, helper_search_terms) 
+
+        
 
         if result.match_type == 'exact':
             session['result'] = result.location
             add_exact_match(result.location, user_id, url, recommended_by)
             return jsonify(result.location)
-        elif result.match_type == 'multi_match':
-            return result
-
-            # redirect(url_for('choose_correct_location', 
-            #     user_id=user_id, 
-            #     url=url,
-            #     recommended_by=recommended_by,
-            #     result=result, 
-            #     ))
+        elif result.match_type == 'multi_match' and len(result.location)<3:
+            add_exact_match(result.location[0], user_id, url, recommended_by)
+            return jsonify(result.location[0])
         else:
-            flash('No results. Try adding details like city or attraction name to help the search out.')
+            flash('We can''t find a location for that url. Try adding details like city or attraction name to help the search out.')
             return redirect(f'/map/{str(user_id)}')
 
 
@@ -110,32 +105,32 @@ def find_attraction_location(user_id):
 
 #     return jsonify(result)
 
-@app.route('/map/<int:user_id>/search-results')
-def choose_correct_location(user_id):
+# @app.route('/map/<int:user_id>/search-results')
+# def choose_correct_location(user_id):
 
-    result = ast.literal_eval(request.args.get('result'))
+#     result = ast.literal_eval(request.args.get('result'))
 
-    for location in result:
-        location['business_name'] = search_business_name(location['place_id'])
+#     for location in result:
+#         location['business_name'] = search_business_name(location['place_id'])
 
-    url = request.args.get('url')
-    recommended_by = request.args.get('recommended_by')
+#     url = request.args.get('url')
+#     recommended_by = request.args.get('recommended_by')
 
-    return render_template('search_results.html', result=result, user_id=user_id, url=url, recommended_by=recommended_by)
+#     return render_template('search_results.html', result=result, user_id=user_id, url=url, recommended_by=recommended_by)
 
 
-@app.route('/map/<int:user_id>/search-results', methods=['POST'])
-def add_correct_location(user_id):
+# @app.route('/map/<int:user_id>/search-results', methods=['POST'])
+# def add_correct_location(user_id):
     
-    url= request.form['url']
-    recommended_by = request.form['recommended_by']
-    location = ast.literal_eval(request.form.get('location'))
+#     url= request.form['url']
+#     recommended_by = request.form['recommended_by']
+#     location = ast.literal_eval(request.form.get('location'))
 
-    session['result'] = location
+#     session['result'] = location
 
-    add_exact_match(location, user_id, url, recommended_by)
+#     add_exact_match(location, user_id, url, recommended_by)
 
-    return redirect(f'/map/{str(user_id)}')
+#     return redirect(f'/map/{str(user_id)}')
 
 @app.route('/calculate_trips')
 def calculate_trips():
@@ -158,6 +153,12 @@ def create_map():
             Location.lng,
             Attraction.attraction_id,
             Attraction.url,
+            Attraction.url_img,
+            Attraction.url_title,
+            Attraction.url_head_title,
+            Attraction.url_author,
+            Attraction.url_site_name,
+            Attraction.url_twitter,
             Attraction.recommended_by,
             Attraction.date_stamp,
             User.user_id,
@@ -170,10 +171,6 @@ def create_map():
     ]
 
     return(jsonify(user_details))
-    # return jsonify({
-    #     "user_details": user_details,
-    #     "map_center":
-    # })
 
 @app.route('/user-profile/<int:user_id>')
 def show_user_profile(user_id):
@@ -239,8 +236,6 @@ def create_itinerary_from_parameters():
     duration = (int(hours) * 3600) + (int(days) * 86400)
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
-
-    print(itinerary)
 
     if duration == 0:
         return jsonify(itinerary)

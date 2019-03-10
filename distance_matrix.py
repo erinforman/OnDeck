@@ -97,20 +97,13 @@ def get_next_trip(user_id, origin_place_id, excluded_destinations):
                 (~Trip.destination_place_id.in_(excluded_destinations)),
             ).order_by(Trip.duration).first()
     except:
-
         return 
-
     else:
         return next_trip
-
-
-
 
     #This will be None if the only destination options are excluded destinations or there
     # are no trips because you can't drive from the origin to any other user location 
     # (e.g. Zermatt (car-less city), a single location on Maui)
-    #cmd+d highlights all the things you want.
-   
 
 def create_itinerary(user_id, origin_place_id, duration):
 

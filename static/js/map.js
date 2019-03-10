@@ -31,32 +31,19 @@ function attachAddLocationHandler(map) {
     $.post(`/map/${userId}`, formValues, results => {
 
       if ((typeof results) === "string"){
-        alert("We couldn't find an exact location for that URL. Mind adding search terms?")
+        alert("We couldn't find an exact location for that URL. Try adding a city, state, or business name to the search.")
         window.stop()}
 
       else if ('geometry' in results) {
 
-
-      //   .post(`/map/${userId}`, formValues)
-
-      // }
-
-      // else if ('geometry' in results) {
-     
-  //  block of code to be executed if the condition is true
-    console.log(results)
-
       let lat = results['geometry']['location']['lat'];
       let lng = results['geometry']['location']['lng'];
       let lastLatLng = new google.maps.LatLng(parseInt(lat), Number(lat));
-      // let myCenter = { lat: Number(lat), lng: Number(lng) };
-
 
       let marker = new google.maps.Marker({
       position: { lat, lng },
       map: map,
       animation: google.maps.Animation.DROP,
-          //icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABuwAAAbsBOuzj4gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFZSURBVEiJ7ZS/SsNQFIe/k6hQEV06NI6ODi4FF6Pg4NRYqBpcHLWCL9BX8Bmq+AIREVt0KShYXIqDi7Mu/TMJCk42x8FG25hUQQWH/rZ7fh/3u2e5MMgXkbiivpweFU2sg2yBmoh6mMOH1vHFXRyrsCnCg1WqOrGCVnZ+xvc1r8KGKBOhWoFaIDP89ngUa5Wr7/f2CJqOfaSQ06AQblGmAUQoqrICJMPGMNstMEJw7o2VE8OQHYFC0KVK1e1UwkoZypIIxY8Xfma7MxQ1FNE91Yi557WBClBpOHa+Hxu5wV9kIBgIBoJ+ApExlGxwbGTsQitjT32H7am6Dw3H1s70HHROVEYifoFrFA9hN5qVmlW+nA3gyL8IZRHEVzhTkaKBPCr+GsoqkEZIx7HWk1nut8ENkBQ48H1/f/L06r7H67pm87m+gCFuR/YSx/446rqmuq75q5f+y7wCHwCLEN3o+6gAAAAASUVORK5CYII="
       icon: "https://img.icons8.com/doodle/48/000000/marker.png"
       });
       const infoWindow = new google.maps.InfoWindow({ maxWidth: 350 });     
@@ -313,7 +300,7 @@ function initMap() {
 
     for (let location in results) {
       window.setTimeout(() => {
-        const infoWindow = new google.maps.InfoWindow({ maxWidth: 350 });
+        const infoWindow = new google.maps.InfoWindow({ maxWidth: 2000 });
         const marker = new google.maps.Marker({  
           position: new google.maps.LatLng(results[location].lat, results[location].lng), 
           map: map,  
@@ -325,17 +312,20 @@ function initMap() {
 
       
         const html = ('<div class="window-content">' +
-                        //'<img src="/static/img/polarbear.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                        '<img src="https://static01.nyt.com/images/2017/11/14/t-magazine/tmag-capferret-slide-KFLI/tmag-capferret-slide-KFLI-facebookJumbo.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                        
-                        '<h2><b>' + results[location].business_name+ '</b></h2>' +
-                        '<p><a href=' + results[location].url + '>' + results[location].url + '</a></p>' +
-                        `${results[location].recommended_by 
-                              ?`<p><b>Recommended by: </b>${results[location].recommended_by}</p>`
+                        `${results[location].url_img
+                              ?`<img src=${results[location].url_img} alt="" align="left" style="width:100px;margin: 0px 8px 0px 2px;" class="thumbnail">`
                                : ''
                           }` +
-                        '<p>' + results[location].formatted_address + '</p>' +
-                        '<p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
+                        //'<img src="https://static01.nyt.com/images/2017/11/14/t-magazine/tmag-capferret-slide-KFLI/tmag-capferret-slide-KFLI-facebookJumbo.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
+                        `<h2><b>${results[location].business_name}</b></h2>` +
+                        `<p><a href=${results[location].url}>${results[location].url_title}</a><br><strong>- ${results[location].url_site_name}</strong></p>` +
+
+                        `${results[location].recommended_by 
+                              ?`<b>Recommended by: </b>${results[location].recommended_by}<br>`
+                               : ''
+                          }` + 
+                        results[location].formatted_address + '<br'+
+                        '<br><p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
                   '</div>');
         bindInfoWindow(marker, map, infoWindow, html);
       }, i * 10);  
@@ -371,6 +361,9 @@ function initMap() {
  //make get request to new return from distance matrix
      // $.get('/calculate_trips', () => {
      // });
+//      google.maps.event.addListenerOnce(map, 'idle', function(){
+//     jQuery('.gm-style-iw').prev('div').remove();
+// });
 }
 
 function bindInfoWindow(marker, map, infoWindow, html) {
