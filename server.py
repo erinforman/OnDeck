@@ -169,7 +169,7 @@ def create_map():
             ).filter(User.user_id == user_id
             ).all()
     ]
-    
+
     return(jsonify(user_details))
 
 @app.route('/user-profile/<int:user_id>')
@@ -180,6 +180,12 @@ def show_user_profile(user_id):
         Location.business_name,
         Attraction.attraction_id,
         Attraction.url,
+        Attraction.url_img,
+        Attraction.url_title,
+        Attraction.url_head_title,
+        Attraction.url_author,
+        Attraction.url_site_name,
+        Attraction.url_twitter,
         Attraction.recommended_by,
         User.user_id,
         User.fname,
@@ -224,8 +230,6 @@ def select_itinerary_parameters(user_id):
 
     return render_template('itinerary.html', result = result, user_id = user_id)
 
-
-
 @app.route('/itinerary.json')
 def create_itinerary_from_parameters():
 
@@ -236,6 +240,8 @@ def create_itinerary_from_parameters():
     duration = (int(hours) * 3600) + (int(days) * 86400)
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
+
+    print(itinerary.itinerary_details)
 
     if duration == 0:
         return jsonify(itinerary)

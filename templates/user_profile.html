@@ -16,11 +16,21 @@
             <br>
             <br>
             {% for location in result %}
+                <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}"><b> {{ location['business_name'] }}:</b> {{ location['formatted_address'] }}
+                {% if location['url_title'] or location['url'] %}
+                    <a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
+                {% endif %}
+                {% if location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter']  %}
+                    -  {{ location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter'] }}
+                {% endif %}
 
-                <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}"><b> <a href="{{ location['url'] }}">{{ location['business_name'] }}</a>:</b> {{ location['formatted_address'] }} 
+                {% if location['url_img'] %}
+                    <br><img id = "profile_img" src="{{ location['url_img'] }}"><br>
+                {% endif %}
+                
+
+                 
                 <br>
-            
-            
             {% endfor %}
 
             <br>

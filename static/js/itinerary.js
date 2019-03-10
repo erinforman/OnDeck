@@ -31,8 +31,6 @@ return dDisplay + hDisplay + mDisplay;
 
 function showResults(results) {
 
-  console.log(results)
-
   $("#email_itinerary").empty();
   $("#itinerary_duration").empty();
   $("#itinerary_time_left").empty();
@@ -57,6 +55,10 @@ function showResults(results) {
 
   else {
 
+  let url_display_text = results[1][0][5] || results[1][0][3]
+  let source_display_text = results[1][0][8] || results[1][0][6] || results[1][0][7] || results[1][0][9]
+
+
   $('#itinerary').html('');
 
   $('#email_itinerary').html('<button id="email_itinerary_btn">Email Itinerary</button>')
@@ -64,26 +66,26 @@ function showResults(results) {
   $('#itinerary_time_left').html(secondsToDhm(results[3]) + ' time left')
 
  $("#legs").empty();
-
+//Origin
  $('#legs').append(`
-    <div id=itinerary_destination_urlhyper_0 style= 'display: inline-block; padding: 5px;'></div>Origin <a href= '${results[1][0][3]}'>${results[1][0][4]}</a><br>
+    <div id=itinerary_destination_business_name_0 style= 'display: inline-block; padding: 5px;'></div><strong>Origin</strong> ${results[1][0][10]}: ${results[1][0][11]}<br>
+    <div id=itinerary_destination_urlhyper_0 style= 'display: inline-block; padding: 5px;'></div><a href= '${results[1][0][3]}'>${url_display_text} </a> - ${source_display_text}<br>
+    ${results[1][0][4]
+        ?`<img id = "profile_img" src=${results[1][0][4]} alt="" class="thumbnail"><br>`
+                               : ''
+                          }
+
     <div id=itinerary_duration_0 style= 'display: inline-block; padding: 5px;'></div> ${secondsToDhm(results[1][0][1])}<br>
-
-
   `);
-
+//Trips
   $.each( results[1].slice(1), function( i,l ){
   $('#legs').append(`
     <div id=itinerary_origin_urlhyper_${i} style= 'display: inline-block; padding: 5px;'></div>Leg ${Number(i+1)} <a href= '${l[3]}'>${l[4]}</a><br>
     <div id=itinerary_duration_${i} style= 'display: inline-block; padding: 5px;'></div> ${secondsToDhm(l[1])}<br>
-
   `);
-
   $('#itinerary').append('Origin: ' + results[4]);
-
 });
-
-
+//Final Destination
   $('#legs').append(`
     <div id=itinerary_destination_urlhyper_${results[1].length-1} style= 'display: inline-block; padding: 5px;'></div>Final Destination <a href= '${results[1][results[1].length-1][6]}'>${results[1][results[1].length-1][7]}</a> <br>
 
