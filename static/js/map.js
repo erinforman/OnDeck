@@ -310,23 +310,24 @@ function initMap() {
           //<a href="https://icons8.com/icon/30567/map-pin">Map Pin icon by Icons8</a>
         });
 
-      
+        let url_display_text = results[location].url_title || results[location].url
+        let source_display_text = results[location].url_site_name || results[location].url_head_title || results[location].url_author || results[location].url_twitter
+
         const html = ('<div class="window-content">' +
                         `${results[location].url_img
-                              ?`<img src=${results[location].url_img} alt="" align="left" style="width:100px;margin: 0px 8px 0px 2px;" class="thumbnail">`
+                              ?`<img src=${results[location].url_img} alt="" align="right" style="width:100px;margin: 0px 8px 20px 2px;" class="thumbnail">`
                                : ''
                           }` +
                         //'<img src="https://static01.nyt.com/images/2017/11/14/t-magazine/tmag-capferret-slide-KFLI/tmag-capferret-slide-KFLI-facebookJumbo.jpg" alt="polarbear" style="width:150px;" class="thumbnail">' +
-                        `<h2><b>${results[location].business_name}</b></h2>` +
-                        `<p><a href=${results[location].url}>${results[location].url_title}</a><br><strong>- ${results[location].url_site_name}</strong></p>` +
-
+                        `<h2><b>${results[location].business_name}</b></h2>
+                        ${results[location].formatted_address}<br><br>` +
+                        `<a href=${results[location].url}>${url_display_text}</a> - ${source_display_text}<br><br>`+
                         `${results[location].recommended_by 
-                              ?`<b>Recommended by: </b>${results[location].recommended_by}<br>`
+                              ?`<b>Recommended by: </b>${results[location].recommended_by}<br><br>`
                                : ''
-                          }` + 
-                        results[location].formatted_address + '<br'+
-                        '<br><p><i>(saved ' + results[location].date_stamp + ')</i></p>' +
-                  '</div>');
+                          }` +
+                        `<small>(saved ${results[location].date_stamp})</small> 
+                        </div>`);
         bindInfoWindow(marker, map, infoWindow, html);
       }, i * 10);  
 

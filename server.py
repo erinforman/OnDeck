@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 from location_search import search_url, search_cleaned_url, location_for_exact_match, add_exact_match, search_business_name, delete_attraction
 from distance_matrix import create_itinerary, write_distance_matrix_db
 from model import connect_to_db, db, User, Location, Attraction
-
+from urllib.request import urlopen
 
 app = Flask(__name__)
 
@@ -169,7 +169,7 @@ def create_map():
             ).filter(User.user_id == user_id
             ).all()
     ]
-
+    
     return(jsonify(user_details))
 
 @app.route('/user-profile/<int:user_id>')

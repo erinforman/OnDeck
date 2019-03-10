@@ -3,7 +3,7 @@ from collections import namedtuple
 from model import connect_to_db, db, User, Location, Attraction
 from flask import flash
 from distance_matrix import write_distance_matrix_db
-from beautiful_soup import search_url_image, search_url_title, search_url_head_title, search_url_author, search_url_site_name, search_url_twitter
+from beautiful_soup import beautiful_soup, search_url_image, search_url_title, search_url_head_title, search_url_author, search_url_site_name, search_url_twitter
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 Search = namedtuple('Search',['location', 'match_type'])
@@ -84,18 +84,19 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
 
     if not existing_attraction:
             dt = datetime.datetime.now().date()
+            soup =  beautiful_soup(url)
             
             new_attraction = Attraction(user_id=user_id, 
                 place_id=place_id, 
                 url=url, 
                 recommended_by=recommended_by,
                 date_stamp = dt.strftime('%Y-%m-%d'),
-                url_img = search_url_image(url),
-                url_title = search_url_title(url),
-                url_head_title = str(search_url_head_title(url)),
-                url_author = search_url_author(url),
-                url_site_name = search_url_site_name(url),
-                url_twitter = search_url_twitter(url)
+                url_img = search_url_image(url,soup),
+                url_title = search_url_title(url,soup),
+                url_head_title = search_url_head_title(url,soup),
+                url_author = search_url_author(url,soup),
+                url_site_name = search_url_site_name(url,soup),
+                url_twitter = search_url_twitter(url,soup),
                 )
 
             db.session.add(new_attraction)
@@ -103,8 +104,8 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
 
             # flash(f'Exact location match! {business_name} at {formatted_address} added to map.')
 
-    else:
-        flash(f'{business_name} is already on your map.')
+    # else:
+    #     flash(f'{business_name} is already on your map.')
 
 
 def search_business_name(place_id):
