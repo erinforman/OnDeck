@@ -54,12 +54,8 @@
       {% for msg in get_flashed_messages() %}
         <div class="alert alert-danger show">{{ msg }}</div>
       {% endfor %}
-
     </div>
-
-    <div class="container">
+    
     {% block content %}CONTENT HERE{% endblock %}
-    </div>
-
   </body>
 </html>

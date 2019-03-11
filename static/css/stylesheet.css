@@ -56,3 +56,19 @@
   width: 150px; /* Set a small width */
 }
 
+html, body, .home, .home .row {
+  width: 100%;
+  height: 100%;
+}
+
+.home .row {
+  align-items: center;
+}
+
+.home .login-form {
+  height: 25%;
+}
+
+.home .login-form h1, .home .login-form p {
+  text-align: center;
+}

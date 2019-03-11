@@ -3,18 +3,52 @@
 {% block title %}Via{% endblock %}
 
 {% block content %}
+<div class="container home">
+    <main class="row">
+        <div class="col">
+        </div>
+        <div class="col-8">
+        <section class="col login-form">
+            <form action="/login" method="POST">
+                <div class="form-row align-items-center">
+                    <!-- <h1>Login</h1> -->
+                    <p>
+                        <div class="col-5">
+                            <input type="email" name="email" class="form-control mb-2" id="inlineFormInput" placeholder="carmen@sandiego.com"required>
+                        </div>
+                    </p>
+                    <p>
+                        <div class="col-auto">
+                                <input type="password" name="password" class="form-control mb-2" id="inlineFormInputGroup" placeholder="Password" required>
+                        </div>
+                    </p>
+                    <p>
+                        <div class="col-auto">
+                                <input type="submit" value="Log In" class="btn btn-primary mb-2">
+                        </div>
+                    </p>
+                   
+                </div>
+                <div class="form-row align-items-center">
+                <p>
+                    <div class="col-auto">
+                        <a href="/new-user"> New user? Create an account.</a>
+                    </div>
+                </p>
+            </div>
+            </form>
+            
+        </section>
+        </div>
+        <div class="col">
+    </div>
 
+    </main>
 
-
-<h1>Login</h1>
-    <form action="/login" method="POST">
-        Email: <input type="email" name="email" required>
-        <br>
-        Password: <input type="password" name="password" required>
-        <input type="submit" value="Log In">
-        <br>
-        <a href="/new-user">New user? Create an account.</a>
+</div>
 {% endblock %}
+
+
 
 
 
