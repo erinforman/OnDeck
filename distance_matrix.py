@@ -91,7 +91,7 @@ def get_next_trip(user_id, origin_place_id, excluded_destinations):
             loc_1.formatted_address.label('formatted_address_1'),
             Trip.destination_place_id,
             attrc_2.url.label('url_2'),
-            attrc_1.url_img.label('url_img_2'),
+            attrc_2.url_img.label('url_img_2'),
             attrc_2.url_title.label('url_title_2'),
             attrc_2.url_head_title.label('url_head_title_2'),
             attrc_2.url_author.label('url_author_2'),

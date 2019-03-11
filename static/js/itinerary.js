@@ -68,7 +68,7 @@ function showResults(results) {
  $("#legs").empty();
 //Origin
  $('#legs').append(`
-    <div id=itinerary_destination_business_name_0 style= 'display: inline-block; padding: 5px;'></div><strong>Origin</strong> ${results[1][0][10]}: ${results[1][0][11]}<br>
+    <strong>Origin) </strong><div id=itinerary_destination_business_name_0 style= 'display: inline-block; padding: 5px;'></div>${results[1][0][10]}: ${results[1][0][11]}<br>
     <div id=itinerary_destination_urlhyper_0 style= 'display: inline-block; padding: 5px;'></div><a href= '${results[1][0][3]}'>${url_display_text} </a> - ${source_display_text}<br>
     ${results[1][0][4]
         ?`<img id = "profile_img" src=${results[1][0][4]} alt="" class="thumbnail"><br>`
@@ -79,15 +79,35 @@ function showResults(results) {
   `);
 //Trips
   $.each( results[1].slice(1), function( i,l ){
+
+  url_display_text = l[5] || l[3]
+  source_display_text = l[8] || l[6] || l[7] || l[9]
+
   $('#legs').append(`
-    <div id=itinerary_origin_urlhyper_${i} style= 'display: inline-block; padding: 5px;'></div>Leg ${Number(i+1)} <a href= '${l[3]}'>${l[4]}</a><br>
+    <strong>${i+1})</strong>: <div id=itinerary_destination_business_name_${i} style= 'display: inline-block; padding: 5px;'></div>${l[10]}: ${l[11]}<br>
+    <div id=itinerary_destination_urlhyper_${i} style= 'display: inline-block; padding: 5px;'></div><a href= '${l[3]}'>${url_display_text} </a> - ${source_display_text}<br>
+    ${l[4]
+        ?`<img id = "profile_img" src=${l[4]} alt="" class="thumbnail"><br>`
+                               : ''
+                          }
     <div id=itinerary_duration_${i} style= 'display: inline-block; padding: 5px;'></div> ${secondsToDhm(l[1])}<br>
   `);
   $('#itinerary').append('Origin: ' + results[4]);
 });
 //Final Destination
+console.log(results)
+console.log(results[1])
+console.log(results[1].length)
+
+url_display_text = results[1][results[1].length-1][15] || results[1][results[1].length-1][13]
+source_display_text = results[1][results[1].length-1][18] || results[1][results[1].length-1][16] || results[1][results[1].length-1][17] || results[1][results[1].length-1][19]
   $('#legs').append(`
-    <div id=itinerary_destination_urlhyper_${results[1].length-1} style= 'display: inline-block; padding: 5px;'></div>Final Destination <a href= '${results[1][results[1].length-1][6]}'>${results[1][results[1].length-1][7]}</a> <br>
+    <strong>Final Destination) </strong>: <div id=itinerary_destination_business_name_${results[1].length-1} style= 'display: inline-block; padding: 5px;'></div>${results[1][results[1].length-1][20]}: ${results[1][results[1].length-1][21]}<br>
+    <div id=itinerary_destination_urlhyper_${results[1].length-1} style= 'display: inline-block; padding: 5px;'></div><a href= '${results[1][results[1].length-1][13]}'>${url_display_text} </a> - ${source_display_text}<br>
+    ${results[1][results[1].length-1][14]
+        ?`<img id = "profile_img" src=${results[1][results[1].length-1][14]} alt="" class="thumbnail"><br>`
+                               : ''
+                          }
 
   `);
 
