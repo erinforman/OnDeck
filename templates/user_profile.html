@@ -11,10 +11,6 @@
         <form action="/user-profile/{{ user_id }}" method="post">
 
             <br>
-            <br>
-            <input type="submit" value = "Delete Locations (select all that apply)">
-            <br>
-            <br>
             {% for location in result %}
                 <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}"><b> {{ location['business_name'] }}:</b> {{ location['formatted_address'] }}
                 {% if location['url_title'] or location['url'] %}
@@ -32,6 +28,9 @@
                  
                 <br>
             {% endfor %}
+              <br>
+              <br>
+            <input type="submit" value = "Delete Locations (select all that apply)">
 
             <br>
         </form>

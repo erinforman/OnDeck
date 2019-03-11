@@ -17,15 +17,16 @@
               {% endfor %}
             </select>
             <small>
-    Please wait 1-2 to minutes before using a new location in an itinerary.
+    <br>Please wait 1-2 to minutes before using a new location in an itinerary.
     We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
  </small>
  <br>
             <br>
             How much time do you have for your next trip? <br>
-            
-            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
+
             Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
+            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
+            
             <br>
             <br>
             <input id='submit' type='submit'>
@@ -55,8 +56,8 @@
           <div class="modal-content">
             <span class="close">&times;</span>
             <form id = "email_form" action="/itinerary/{{ user_id }}" method="POST">          
-              Recipient Email <input type='text' name='to_email' value='rachel@bloomingdales.com'><br><br>
-              Your Name <input type='text' name='your_name'value='Monica Geller'>
+              Recipient Email <input type='text' name='to_email'><br><br>
+              Your Name <input type='text' name='your_name'>
               <input type="hidden" id="content" name="content">
               <input id='submit' type='submit'>
             </form>

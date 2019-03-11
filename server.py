@@ -238,6 +238,8 @@ def create_itinerary_from_parameters():
     hours = request.args['hours']
     days = request.args['days']
     duration = (int(hours) * 3600) + (int(days) * 86400)
+    session['hours'] = hours
+    session['days'] = days
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
 
@@ -248,6 +250,7 @@ def create_itinerary_from_parameters():
     elif itinerary[0] == 'no_trips':
         return jsonify(itinerary)
     else:
+        session.pop('itinerary_details', None)
         session['itinerary_details'] = itinerary.itinerary_details
         return jsonify(itinerary)
 
@@ -258,16 +261,17 @@ def email_itinerary(user_id):
     itinerary_details = session['itinerary_details']
     fname = session['fname']
     lname = session['lname']
+    days = session['days']
 
-    #TODO ADD IN MORE ITINERARY DETAILS IN THE EMAIL. 
-
-    content = ''
+    content = f"<p>I planned a trip for us! Pack your bags. We'll be gone for {days} day(s).</p>"
+    content += 'Check out the itinerary:<br><br>'
 
     for i, trip in enumerate(itinerary_details, start=1):
-        content = content + str(i) + ') <a href="' + trip[3] + '">' + trip[4] + '</a>' + "<br/>"
+
+        content += str(i) + ') <a href="' + trip[3] + '">' + trip[10] + '</a>' + "<br/>"
     
     #Add final destination
-    content = content + str(len(itinerary_details)+1) + ') <a href="' + itinerary_details[-1][6] + '">' + itinerary_details[-1][7] + '</a>' + "<br/>"
+    content += str(len(itinerary_details)+1) + ') <a href="' + itinerary_details[-1][13] + '">' + itinerary_details[-1][20] + '</a>' + "<br/>"
 
 
     
