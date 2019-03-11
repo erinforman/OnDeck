@@ -241,8 +241,6 @@ def create_itinerary_from_parameters():
 
     itinerary = create_itinerary(user_id, origin_place_id, duration)
 
-    print(itinerary.itinerary_details)
-
     if duration == 0:
         return jsonify(itinerary)
     elif itinerary[0] == 'need_more_time':

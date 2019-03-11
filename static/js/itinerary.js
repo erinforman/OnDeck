@@ -40,7 +40,7 @@ function showResults(results) {
   if (results[0] === 'need_more_time' || results[3] === 0) {
     $('#itinerary_alert').html(`<div class="alert alert-primary ">
       <strong>Extend</strong> your trip by <strong>${secondsToDhm(results[1][1]-results[2])}</strong> 
-      to get to <strong>${results[1][7]} </div>
+      to get to <strong>${results[1][20]} </div>
       `);
     }
 
