@@ -5,30 +5,97 @@
 
 {% block content %}
 
-    <p>{{ user.fname }} {{ user.lname }}, submit your travel URL here!</p>
+<body id="mappage">
+<div class="container-fluid mapform">
+    <!-- <div class="row"> -->
 
-    <body>
+        <!-- <div class="col-3"> -->
+        
 
-        <form id = "map_form" action="/map/{{ user.user_id }}" method="post">
-            Attraction URL <input id = "url" type="text" name="url" style="height: 50px; width: 550px; font-style:italic" required>
+        <!-- <p>{{ user.fname }} {{ user.lname }}, submit your travel URL here!</p> -->
+
+
+
+
+        <!-- <form id="map_form" action="/map/{{ user.user_id }}" method="post">
+            <p>
+                Attraction URL <input id = "url" type="text" name="url" required>
+            </p>
             <br><br>
-            Helper search terms <input id = "helper_search_terms" type="text" name="helper_search_terms" style="font-style:italic">
+            <p>
+                Helper search terms <input id = "helper_search_terms" type="text" name="helper_search_terms" style="font-style:italic">
+            </p>
             <br>
-            Recommended by <input id = "recommended_by" type="text" name="recommended_by" style="font-style:italic" >
-             <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+            <p>
+                Recommended by <input id = "recommended_by" type="text" name="recommended_by" style="font-style:italic" >
+            </p>
+            <p>
+                <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+            </p>
             <br>
-        <input type="submit">
-        </form>
+            <p>
+                <input id="submit" type="submit">
+            </p>
+        </form> -->
 
-    </body>
+        
+  <!-- <div class="card card-body"> -->
+ <!--    <form id="map_form" action="/map/{{ user.user_id }}" method="post">
+            <p>
+                Attraction URL <input id = "url" type="text" name="url" required>
+            
+                Helper search terms <input id = "helper_search_terms" type="text" name="helper_search_terms" style="font-style:italic">
+            
+                Recommended by <input id = "recommended_by" type="text" name="recommended_by" style="font-style:italic" >
+            
+                <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+            
+                <input id="submit" type="submit"> -->
 
+<div class="row no-gutter">
+<div class="col-2">
+    <!-- <p> -->
+      <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Save a new location
+      </button>
+    <!-- </p> -->
+</div>
 
-    <p>Your bucket map!</p>
+<div class="col">
+<div class="collapse" id="collapseExample">
+ <form id="map_form" action="/map/{{ user.user_id }}" method="post">
+  <div class="form-row">
+    <div class="col-4">
+      <input type="text" class="form-control" placeholder="travel blog, restaurant review, city feature (url)" name="url" id="url" required>
+    </div>
+    <div class="col-3">
+      <input type="text" class="form-control" placeholder="city, landmark (optional)" name="helper_search_terms" id="helper_search_terms">
+    </div>
+    <div class="col-3">
+      <input type="text" class="form-control" placeholder="recommended by (optional)" name="recommended_by" id="recommended_by">
+    </div>
+    <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+     <div class="col-2">       
+        <!-- <input id="submit" type="submit"> -->
+        <button id="submit" type="submit" class="btn btn-outline-success">Let's go!</button>
+    </div>
+  </div>
+</form>
+            <!-- </p> -->
+        <!-- </form> -->
+  </div>
+</div>
+        </div>
+
+    
+
+<!-- <div class="col-9">
+ -->   
 
         <style>
           #map {
-             height: 500px;  
-             width: 80%;   
+             height: 600px;  
+             width: 100%;   
           }
         </style>
 
@@ -40,6 +107,14 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_KEY }}&callback=initMap">
     </script>
+  <!--   </div> -->
+
+    <!-- </div> -->
+
+</div>
+</body>
 
 {% endblock %}
+
+
 

@@ -3,34 +3,38 @@
 {% block title %}Itineraries{% endblock %}
 
 {% block content %}
-
     <body>
-      <div id="itinerary_alert">
-      </div>
-        <form id = "itinerary_form">            
-            Select a starting point:
-            <br>
-            <select name='origin_place_id' size = "8">
-              <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }} - - - - - ({{ result[0]['formatted_address'] }})</option>
-              {%for location in result[1:]%}
-                 <option value='{{location["place_id"]}}'>{{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
-              {% endfor %}
-            </select>
-            <small>
-    <br>Please wait 1-2 to minutes before using a new location in an itinerary.
-    We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
- </small>
- <br>
-            <br>
-            How much time do you have for your next trip? <br>
+      {{ flash_msgs() }}
+      <main>
+        <section class="edit-itinerary">
+        <div id="itinerary_alert">
+        </div>
+          <form id = "itinerary_form">            
+              Select a starting point:
+              <br>
+              <select name='origin_place_id' size = "8">
+                <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }} - - - - - ({{ result[0]['formatted_address'] }})</option>
+                {%for location in result[1:]%}
+                   <option value='{{location["place_id"]}}'>{{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
+                {% endfor %}
+              </select>
+              <small>
+      <br>Please wait 1-2 to minutes before using a new location in an itinerary.
+      We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
+   </small>
+   <br>
+              <br>
+              How much time do you have for your next trip? <br>
 
-            Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
-            Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
-            
-            <br>
-            <br>
-            <input id='submit' type='submit'>
-        </form>
+              Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
+              Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
+              
+              <br>
+              <br>
+              <input id='submit' type='submit'>
+          </form>
+        </section>
+      <section class="itinerary-display">
 
 
         <br>
@@ -65,6 +69,7 @@
 
         </div>
        
+      </section>
 
     </body>
 

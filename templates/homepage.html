@@ -3,6 +3,11 @@
 {% block title %}Via{% endblock %}
 
 {% block content %}
+<body id="homepage">
+    <video autoplay muted loop id="myVideo">
+      <source src="static/css/Porto_View.mp4" type="video/mp4">
+    </video>
+    {{ flash_msgs() }}
 <div class="container home">
     <main class="row">
         <div class="col">
@@ -13,17 +18,17 @@
                 <div class="form-row align-items-center">
                     <!-- <h1>Login</h1> -->
                     <p>
-                        <div class="col-5">
-                            <input type="email" name="email" class="form-control mb-2" id="inlineFormInput" placeholder="carmen@sandiego.com"required>
+                        <div class="col-6">
+                            <input type="email" name="email" class="form-control mb-2" id="inlineFormInput" placeholder="Email"required>
                         </div>
                     </p>
                     <p>
-                        <div class="col-auto">
+                        <div class="col-4">
                                 <input type="password" name="password" class="form-control mb-2" id="inlineFormInputGroup" placeholder="Password" required>
                         </div>
                     </p>
                     <p>
-                        <div class="col-auto">
+                        <div class="col-2">
                                 <input type="submit" value="Log In" class="btn btn-primary mb-2">
                         </div>
                     </p>
@@ -46,6 +51,11 @@
     </main>
 
 </div>
+</body>
+
+<script>
+    $('video').on('click', e => e.preventDefault());
+</script>
 {% endblock %}
 
 

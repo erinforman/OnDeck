@@ -84,7 +84,7 @@ function showResults(results) {
   source_display_text = l[8] || l[6] || l[7] || l[9]
 
   $('#legs').append(`
-    <strong>${i+1})</strong>: <div id=itinerary_destination_business_name_${i} style= 'display: inline-block; padding: 5px;'></div>${l[10]}: ${l[11]}<br>
+    <strong>${i+1})</strong>: <div class="business_name" id="itinerary_destination_business_name_${i}" style= 'display: inline-block; padding: 5px;'></div>${l[10]}: ${l[11]}<br>
     <div id=itinerary_destination_urlhyper_${i} style= 'display: inline-block; padding: 5px;'></div><a href= '${l[3]}'>${url_display_text} </a> - ${source_display_text}<br>
     ${l[4]
         ?`<img id = "profile_img" src=${l[4]} alt="" class="thumbnail"><br>`
