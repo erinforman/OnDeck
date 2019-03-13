@@ -9,6 +9,28 @@
     color: red
 }
 
+body, h1, h2, h3, h4, h5, h6 { 
+  font-family: "Major Mono Display", sans-serif; 
+}
+
+ p, .itinerary_format{ 
+  font-family: "Open Sans", sans-serif; 
+  font-size: 15px;
+}
+
+::-webkit-input-placeholder {
+   font-size: 13px;
+   font-family: "Open Sans";
+}
+
+/*
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Ubuntu", serif;
+  font-weight:  700;
+}*/
+
+/*Abril+Fatface|Dosis|F
+
 {font-family: Arial, Helvetica, sans-serif;}
 
 /* The Modal (background) */
@@ -51,9 +73,14 @@
 }
 
 
-#profile_img {
-  padding: 5px; /* Some padding */
-  width: 150px; /* Set a small width */
+.profile_img {
+  border-radius: 15px 50px 30px;
+  padding-right: 5px; /* Some padding */
+  padding-left: 20px; /* Some padding */
+  width: 300px;
+  height: 200px;
+  object-fit: cover;
+  
 }
 
 /*Homepage Login Form*/
@@ -100,10 +127,47 @@ body {
   margin-left: 10px;
 }
 
-.no-gutter > [class*='col-2'] {
+/*.no-gutter > [class*='col-2'] {
     padding-right:0;
     padding-left:0;
 }
+*/
+
+/*   Sitewide  */
 
 
+.navbar {
+  background-color: #b1cabe;
+  color: white;
+  border-radius: 0px;
+}
 
+#via-logo, #via-logo:hover, .navbar-dark .navbar-brand {
+  color: #151515;
+}
+
+.navbar-nav>li>a, .navbar-dark .navbar-nav .nav-link {
+  color: white;
+}
+
+.ml-5 {
+  margin-left: ($spacer * 3) !important;
+}
+
+
+.numberCircle {
+    width: 35px;
+    line-height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 15px;
+    border: 2px solid #666;
+
+}
+/*select {text-align-last:center; }*/
+
+div.itinerary_origins {
+  width:900px;
+margin: auto;
+
+}

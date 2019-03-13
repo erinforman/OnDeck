@@ -3,47 +3,70 @@
 {% block title %}Itineraries{% endblock %}
 
 {% block content %}
-    <body>
+<body id="itinerarypage">
+<div class="container-fluid itineraryform">
+      
       {{ flash_msgs() }}
       <main>
-        <section class="edit-itinerary">
-        <div id="itinerary_alert">
-        </div>
-          <form id = "itinerary_form">            
-              Select a starting point:
-              <br>
-              <select name='origin_place_id' size = "8">
-                <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }} - - - - - ({{ result[0]['formatted_address'] }})</option>
+        
+          <section class="edit-itinerary">
+          <div id="itinerary_alert"></div>
+          <form id = "itinerary_form">
+           <br>
+            <div align="center">
+            Select trip duration 
+            <br>
+            <br>
+            <p>
+              Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
+              Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00'>
+            </p>
+            </div>
+          <br> 
+          <div class="itinerary_origins" align="center">
+            <label for="FormControlSelect1">Select a starting point</label>
+            <br> 
+            <br>           
+            <p>
+              <select class="form-control" name='origin_place_id' id="FormControlSelect1" size = "8">
+                <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }}&nbsp;&nbsp;.............................................&nbsp;&nbsp;{{ result[0]['formatted_address'] }}
+                </option>
                 {%for location in result[1:]%}
-                   <option value='{{location["place_id"]}}'>{{ location['business_name'] }} - - - - - ({{ location['formatted_address'] }})</option>
+                  <option value='{{location["place_id"]}}'>{{ location['business_name'] }}&nbsp;&nbsp;............................................&nbsp;&nbsp;{{ location['formatted_address'] }}
+                  </option>
                 {% endfor %}
               </select>
+              </p>
+            
+            <p>
               <small>
-      <br>Please wait 1-2 to minutes before using a new location in an itinerary.
-      We're making sure we have enough road to get up to 88 because, where we're going, <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
-   </small>
-   <br>
-              <br>
-              How much time do you have for your next trip? <br>
-
-              Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
-              Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00' >
-              
-              <br>
-              <br>
-              <input id='submit' type='submit'>
+                Please wait 1-2 to minutes before using a new location in an itinerary.We're making sure we have enough road to get up to 88 because, where we're going, 
+                <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
+              </small>
+            </p>
+            <br>
+          <!-- <input id='submit' type='submit' class="btn btn-secondary btn-lg"> -->
+          <button id='submit' type='submit' class="btn btn-secondary btn-lg btn-block">Let's go!</button>
+        </div> 
           </form>
-        </section>
+          </section>
+
+      </div>
+
+
       <section class="itinerary-display">
+  
 
 
         <br>
-
-        <div id="itinerary_duration" style= 'display: inline-block; padding: 5px;'></div>
+        
+        <div class="itinerary_format" id="itinerary_duration" style= 'display: inline-block; padding: 5px;'>
+        </div>
+      
         <br>
-        <div id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
+        <div class="itinerary_format" id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
         <br>
-        <div id="legs">
+        <div class="itinerary_format" id="legs">
     <!--     {%for i in range(result|length + 1)%}
             <div id="itinerary_origin_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
             <div id="itinerary_destination_urlhyper_{{ i }}" style= 'display: inline-block; padding: 5px;'></div>
@@ -53,6 +76,7 @@
         </div>
 
         <div id="email_itinerary"></div>
+        <br>
 
         <div id="myModal" class="modal">
 
@@ -70,7 +94,8 @@
         </div>
        
       </section>
-
+</main>
+</div>
     </body>
 
     <script src="http://code.jquery.com/jquery.js"></script>

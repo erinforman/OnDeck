@@ -53,31 +53,34 @@
                 <input id="submit" type="submit"> -->
 
 <div class="row no-gutter">
-<div class="col-2">
+<div class="col-1">
     <!-- <p> -->
-      <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-        Save a new location
+      <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      Search
       </button>
     <!-- </p> -->
 </div>
+
 
 <div class="col">
 <div class="collapse" id="collapseExample">
  <form id="map_form" action="/map/{{ user.user_id }}" method="post">
   <div class="form-row">
     <div class="col-4">
+      
       <input type="text" class="form-control" placeholder="travel blog, restaurant review, city feature (url)" name="url" id="url" required>
+      
     </div>
     <div class="col-3">
-      <input type="text" class="form-control" placeholder="city, landmark (optional)" name="helper_search_terms" id="helper_search_terms">
+      <input type="text" class="form-control" placeholder="city,landmark(optional)" name="helper_search_terms" id="helper_search_terms">
     </div>
     <div class="col-3">
-      <input type="text" class="form-control" placeholder="recommended by (optional)" name="recommended_by" id="recommended_by">
+      <input type="text" class="form-control" placeholder="recommended by(optional)" name="recommended_by" id="recommended_by">
     </div>
     <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
      <div class="col-2">       
         <!-- <input id="submit" type="submit"> -->
-        <button id="submit" type="submit" class="btn btn-outline-success">Let's go!</button>
+        <button id="submit" type="submit" class="btn btn-secondary">Let's go!</button>
     </div>
   </div>
 </form>
@@ -86,6 +89,7 @@
   </div>
 </div>
         </div>
+        
 
     
 

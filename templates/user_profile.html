@@ -3,15 +3,18 @@
 {% block title %}Manage Places{% endblock %}
 
 {% block content %}
+<body id="profilepage">
+<div class="container-fluid profileform">
 
     <p>{{ session['fname'] }}'s' places</p>
 
     
-    <body>
+    <body id=user_profile>
         <form action="/user-profile/{{ user_id }}" method="post">
 
             <br>
             {% for location in result %}
+            <p>
                 <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}"><b> {{ location['business_name'] }}:</b> {{ location['formatted_address'] }}
                 {% if location['url_title'] or location['url'] %}
                     <a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
@@ -24,7 +27,7 @@
                     <br><img id = "profile_img" src="{{ location['url_img'] }}"><br>
                 {% endif %}
                 
-
+            </p>
                  
                 <br>
             {% endfor %}
@@ -35,7 +38,7 @@
             <br>
         </form>
 
-
+    </div>
     </body>
 
 {% endblock %}
