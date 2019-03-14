@@ -5,32 +5,44 @@
 {% block content %}
 <body id="profilepage">
 <div class="container-fluid profileform">
-
-    <p>{{ session['fname'] }}'s' places</p>
-
     
-    <body id=user_profile>
         <form action="/user-profile/{{ user_id }}" method="post">
 
             <br>
+            <div class="row">
             {% for location in result %}
-            <p>
-                <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}"><b> {{ location['business_name'] }}:</b> {{ location['formatted_address'] }}
-                {% if location['url_title'] or location['url'] %}
-                    <a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
-                {% endif %}
-                {% if location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter']  %}
-                    -  {{ location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter'] }}
-                {% endif %}
-
+            <div class="col-4">
+            
+                <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}">
+                {{ location['business_name'] }}
+                <br><br>
                 {% if location['url_img'] %}
-                    <br><img id = "profile_img" src="{{ location['url_img'] }}"><br>
+                    <img class="profile_img" id = "profile_img" src="{{ location['url_img'] }}"><br><br>
                 {% endif %}
                 
-            </p>
+                <ul style="list-style-type:square;">
+                    <p>
+                {% if location['recommended_by'] %}
+                    Recommended by <img src="https://img.icons8.com/android/24/000000/sort-up.png"> {{ location['recommended_by'] }}<br>
+                {% endif %}
+                <li><p>{{ location['formatted_address'] }}
+                {% if location['url_title'] or location['url'] %}
+                    <br><a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
+                {% endif %}
+                </p></li>
+                </p>
+                
+<!--                 {% if location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter']  %}
+                    -  {{ location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter'] }}
+                {% endif %} -->
+                
+                </ul>
                  
                 <br>
+            </div>
             {% endfor %}
+        </div>
+
               <br>
               <br>
             <input type="submit" value = "Delete Locations (select all that apply)">
