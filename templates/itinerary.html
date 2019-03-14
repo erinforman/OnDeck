@@ -22,13 +22,13 @@
             </div>
           <br> 
           <div class="itinerary_origins" align="center">
-            <h5><label for="FormControlSelect1">Select a starting point</label></h5>      
+            <h5><label for="FormControlSelect1">Select a starting point from your saved locations</label></h5>      
             <p>
               <select class="form-control" name='origin_place_id' id="FormControlSelect1" size = "8">
-                <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }}&nbsp;&nbsp;.............................................&nbsp;&nbsp;{{ result[0]['formatted_address'] }}
+                <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ result[0]['formatted_address'] }}
                 </option>
                 {%for location in result[1:]%}
-                  <option value='{{location["place_id"]}}'>{{ location['business_name'] }}&nbsp;&nbsp;............................................&nbsp;&nbsp;{{ location['formatted_address'] }}
+                  <option value='{{location["place_id"]}}'>{{ location['business_name'] }}&nbsp;&nbsp;-&nbsp;&nbsp;{{ location['formatted_address'] }}
                   </option>
                 {% endfor %}
               </select>

@@ -5,51 +5,55 @@
 {% block content %}
 <body id="homepage">
     <video autoplay muted loop id="myVideo">
-      <source src="static/css/Porto_View.mp4" type="video/mp4">
+        <source src="static/css/Porto_View.mp4" type="video/mp4">
     </video>
     {{ flash_msgs() }}
    
 <div class="container home">
-
     <main class="row">
-        <div class="col-3"></div>
+        <div class="col-3">
+        </div>
         <div class="col-7">
-            <h1 style='color: #b1cabe;font-size: 1500%; font-weight: 900'>VIA</h1><br>
-        <section class="login-form">
-            
-            <form action="/login" method="POST">
-                <div class="form-row align-items-center">
-                    <p>
-                        <div class="col-6">
-                            <input type="email" name="email" class="form-control mb-2" id="inlineFormInput" placeholder="Email" style="font-family: Open Sans;" required>
-                        </div>
-                   
-                        <div class="col-3">
+            <h1 style='color: #b1cabe;font-size: 1500%; font-weight: 900'>VIA</h1>
+            <br>
+            <br>
+            <center><h6 class="font-weight-bold" style='color: white;font-size: 180%; font-weight: 900'>Turn Wanderlust into action.</h6></center>
+            <br>
+            <center><h6 style='color: white; font-weight: 900; font-size: 105%;'>Save travel recommendations and resources
+                <br>-
+                <br>Create a bucket list travel map
+                <br>-
+                <br>Plan custom itineraries</h6></center>
+            <br>
+            <br>
+            <section class="login-form">
+                <form action="/login" method="POST">
+                    <div class="form-row align-items-center">
+                        <p>
+                            <div class="col-6">
+                                <input type="email" name="email" class="form-control mb-2" id="inlineFormInput" placeholder="Email" style="font-family: Open Sans;" required>
+                            </div>
+                            <div class="col-3">
                                 <input type="password" name="password" class="form-control mb-2" id="inlineFormInputGroup" placeholder="Password" style="font-family: Open Sans;" required>
-                        </div>
-                    </p>
+                            </div>
+                        </p>
                         <div class="col-3">
-                                <input type="submit" value="Log In" class="btn btn-secondary mb-2" style='background-color: #b1cabe; font-weight: 900'>
+                            <input type="submit" value="Log In" class="btn btn-secondary mb-2" style='background-color: #b1cabe; font-weight: 900'>
                         </div>
-                   
-                </div>
+                    </div>
                 <div class="form-row align-items-center">
-                
                     <div class="col-auto">
                         <a class="font-weight-bold" href="/new-user" style='color: #b1cabe; font-weight: 900'> New user? Create an account.</a>
                     </div>
-                
-            </div>
-            </form>
-        </section>
+                </div>
+                </form>
+            </section>
         </div>
-        <div class="col-2"></div>
-
+        <div class="col-2">
+        </div>
     </main>
-
 </div>
 </body>
-
 <script>
     $('video').on('click', e => e.preventDefault());
 </script>
