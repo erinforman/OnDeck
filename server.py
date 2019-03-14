@@ -91,7 +91,6 @@ def find_attraction_location(user_id):
             add_exact_match(result.location[0], user_id, url, recommended_by)
             return jsonify(result.location[0])
         else:
-            flash('We can''t find a location for that url. Try adding details like city or attraction name to help the search out.')
             return redirect(f'/map/{str(user_id)}')
 
 

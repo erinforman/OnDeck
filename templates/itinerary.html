@@ -51,7 +51,7 @@
           </form>
           </section>
 
-      </div>
+      
 
 
       <section class="itinerary-display">
@@ -75,26 +75,29 @@
         {% endfor %} -->
         </div>
 
+
         <div id="email_itinerary"></div>
         <br>
 
         <div id="myModal" class="modal">
 
           <!-- Modal content -->
-          <div class="modal-content">
+          <div class="modal-content w-25">
             <span class="close">&times;</span>
-            <form id = "email_form" action="/itinerary/{{ user_id }}" method="POST">          
-              Recipient Email <input type='text' name='to_email'><br><br>
-              Your Name <input type='text' name='your_name'>
+            <form id = "email_form" action="/itinerary/{{ user_id }}" method="POST">
+            <h5>Recipient Email</h5> 
+              <p><input type='text' class="form-control" name='to_email' style="font-family: Open Sans;"></p>
+              <h5>Your Name</h5>
+              <p><input type='text' class="form-control" name='your_name' style="font-family: Open Sans;"></p>
               <input type="hidden" id="content" name="content">
-              <input id='submit' type='submit'>
+              <button id='submit' type="submit" class="btn btn-secondary">Send</button>
             </form>
-          </div>
-
+</div>
         </div>
        
       </section>
 </main>
+</div>
 </div>
     </body>
 

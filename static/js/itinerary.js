@@ -61,7 +61,7 @@ function showResults(results) {
 
   $('#itinerary').html('');
 
-  $('#email_itinerary').html('<button id="email_itinerary_btn">Email Itinerary</button>')
+  $('#email_itinerary').html('<button id="email_itinerary_btn" class="btn btn-secondary">Email Itinerary</button>')
   $('#itinerary_duration').html('Itinerary length: ' + secondsToDhm(results[4])+ '<br>'+((results[4]/results[2])*100).toFixed(1) + '% of available time used')
   $('#itinerary_time_left').html(secondsToDhm(results[3]) + ' time left')
 

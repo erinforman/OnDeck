@@ -31,7 +31,7 @@ function attachAddLocationHandler(map) {
     $.post(`/map/${userId}`, formValues, results => {
 
       if ((typeof results) === "string"){
-        alert("We couldn't find an exact location for that URL. Try adding a city, state, or business name to the search.")
+                alert("We couldn't find an exact location for that URL. Try adding a city, state, or business name to the search.")
         window.stop()}
 
       else if ('geometry' in results) {
