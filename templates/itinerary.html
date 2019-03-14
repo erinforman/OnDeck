@@ -14,9 +14,7 @@
           <form id = "itinerary_form">
            <br>
             <div align="center">
-            Select trip duration 
-            <br>
-            <br>
+            <h5>Select trip duration</h5>
             <p>
               Days <input type='number' name='days' min='0' max='1000' step='1' value='00'>
               Hours <input type='number' name='hours' min='0' max='1000' step='1' value='00'>
@@ -24,9 +22,7 @@
             </div>
           <br> 
           <div class="itinerary_origins" align="center">
-            <label for="FormControlSelect1">Select a starting point</label>
-            <br> 
-            <br>           
+            <h5><label for="FormControlSelect1">Select a starting point</label></h5>      
             <p>
               <select class="form-control" name='origin_place_id' id="FormControlSelect1" size = "8">
                 <option selected="selected" value='{{result[0]["place_id"]}}'>{{ result[0]['business_name'] }}&nbsp;&nbsp;.............................................&nbsp;&nbsp;{{ result[0]['formatted_address'] }}
@@ -38,12 +34,12 @@
               </select>
               </p>
             
-            <p>
+       <!--      <p>
               <small>
-                Please wait 1-2 to minutes before using a new location in an itinerary.We're making sure we have enough road to get up to 88 because, where we're going, 
+                Please wait 1-2 to minutes before using a new location in an itinerary.<br>We're making sure we have enough road to get up to 88 because, where we're going, 
                 <a href="https://www.youtube.com/watch?v=flge_rw6RG0">we need roads</a>.
               </small>
-            </p>
+            </p> -->
             <br>
           <!-- <input id='submit' type='submit' class="btn btn-secondary btn-lg"> -->
           <button id='submit' type='submit' class="btn btn-secondary btn-lg btn-block">Let's go!</button>
@@ -59,12 +55,10 @@
 
 
         <br>
-        
-        <div class="itinerary_format" id="itinerary_duration" style= 'display: inline-block; padding: 5px;'>
-        </div>
-      
         <br>
-        <div class="itinerary_format" id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div>
+        <br>
+        <div class="itinerary_format" id="itinerary_duration"></div><br>
+        <!-- <div class="itinerary_format" id="itinerary_time_left" style= 'display: inline-block; padding: 5px;'></div> -->
         <br>
         <div class="itinerary_format" id="legs">
     <!--     {%for i in range(result|length + 1)%}
@@ -75,7 +69,7 @@
         {% endfor %} -->
         </div>
 
-
+        <br>
         <div id="email_itinerary"></div>
         <br>
 

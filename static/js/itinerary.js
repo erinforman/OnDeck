@@ -33,7 +33,7 @@ function showResults(results) {
 
   $("#email_itinerary").empty();
   $("#itinerary_duration").empty();
-  $("#itinerary_time_left").empty();
+  // $("#itinerary_time_left").empty();
   $("#itinerary_alert").empty();
   $("#legs").empty();
 
@@ -62,13 +62,13 @@ function showResults(results) {
   $('#itinerary').html('');
 
   $('#email_itinerary').html('<button id="email_itinerary_btn" class="btn btn-secondary">Email Itinerary</button>')
-  $('#itinerary_duration').html('Itinerary length: ' + secondsToDhm(results[4])+ '<br>'+((results[4]/results[2])*100).toFixed(1) + '% of available time used')
-  $('#itinerary_time_left').html(secondsToDhm(results[3]) + ' time left')
+  $('#itinerary_duration').html(`<center>Itinerary duration: <strong>${secondsToDhm(results[4])}</strong><img src="https://img.icons8.com/material-sharp/50/000000/sort-down.png"><strong>${secondsToDhm(results[3])}</strong> of free time<img src="https://img.icons8.com/material-sharp/50/000000/sort-down.png"><strong>${((results[4]/results[2])*100).toFixed(1)}%</strong> of available time planned</strong></center>`)
+  // $('#itinerary_time_left').html(secondsToDhm(results[3]) + ' time left')
 
  $("#legs").empty();
 //Origin
  $('#legs').append(`
-    <strong>Start    </strong>
+    <h5><strong>Start    </strong></h5>
     ${results[1][0][4]
         ?`<img id = "profile_img_0" src=${results[1][0][4]} alt="" class="profile_img">`
                                : ''
@@ -87,7 +87,7 @@ function showResults(results) {
   source_display_text = l[8] || l[6] || l[7] || l[9]
 
   $('#legs').append(`
-    <div class="numberCircle" style='display: inline-block;'><strong>${i+1}</strong></div>
+    <h5><div class="numberCircle" style='display: inline-block;'><strong>${i+1}</strong></div></h5>
     ${l[4]
         ?`<img id="profile_img_${i}" src=${l[4]} alt="" class="profile_img" style='display: inline-block;'>`
                                : ''
@@ -105,7 +105,7 @@ function showResults(results) {
   source_display_text = results[1][results[1].length-1][18] || results[1][results[1].length-1][16] || results[1][results[1].length-1][17] || results[1][results[1].length-1][19]
  
   $('#legs').append(`
-    <strong>End</strong> 
+    <h5><strong>End</strong></h5>
     ${results[1][results[1].length-1][14]
         ?`<img id = "profile_img_${results[1].length-1}" src=${results[1][results[1].length-1][14]} alt="" class="profile_img" style='display: inline-block;'>`
                                : ''
