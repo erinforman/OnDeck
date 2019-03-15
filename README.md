@@ -19,14 +19,17 @@ Include a photo and article hyperlink in the info window using the Beautiful Sou
 
 ![2](/static/images/README/2.png)
 
-Create custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations, with the option to share the itinerary via e-mail using the SendGrid API. 
-<p align="center"><img src="/static/images/README/4.png" width="600"></p>
-<p align="center"><img src="/static/images/README/5.png" width="600"></p>
-<p align="center"><img src="/static/images/README/6.png" width="600"></p>
-<p align="center"><img src="/static/images/README/7.png" width="600"></p>
-
+Create custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
+<p align="center"><img src="/static/images/README/4.png" width="700"></p>
+<p align="center"><img src="/static/images/README/5.png" width="700"></p>
+<p align="center"><img src="/static/images/README/6.png" width="700"></p>
+<p align="center"><img src="/static/images/README/7.png" width="700"></p>
 
 Helpful error handling to progress the user forward.
+
+Share an itinerary via e-mail using the SendGrid API. 
+
+<p align="center"><img src="/static/images/README/9.png" width="500">  <img src="/static/images/README/10.png" width="500"></p>
 
 Manage all locations.
 
