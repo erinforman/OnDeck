@@ -56,6 +56,8 @@ Via is the travel app that turns wanderlust into action.
 * Google Places
 * SendGrid
 
+(dependencies are listed in requirements.txt)
+
 ***
 
 # about the developer
