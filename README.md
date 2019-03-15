@@ -36,6 +36,7 @@ Via is the travel app that turns wanderlust into action.
 
 <strong>Manage</strong> all locations.
 
+![13](/static/images/README/13.png)
 
 ***
 
@@ -54,16 +55,18 @@ Via is the travel app that turns wanderlust into action.
 * Google Geocoding
 * Google Places
 * SendGrid
-***
-
-# email example
-
-(forthcoming)
 
 ***
 
 # about the developer
 
-(forthcoming)
+Erin's inspiration for this app came from wanting to solve 3 problems:
+
+1. Saving bucket list travel destinations alongside the resource or person that recommended them.
+2. Effortlessly creating itineraries that take the most efficient route between destinations.
+3. Sharing itineraries and resources with friends.
+
+Plus, this app is <i>basically</i> scientifically proven to increase happiness. What a Great Trip! And I’m Not Even There Yet - NYT](https://www.nytimes.com/2014/05/11/travel/what-a-great-trip-and-im-not-even-there-yet.html).
+
 
 Connect on LinkedIn [here](https://www.linkedin.com/in/formanerin/).
