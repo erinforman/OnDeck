@@ -5,3 +5,4 @@ secrets.sh
 node_modules/
 package-lock.json
 dump.sql
+demo_diagram.txt
