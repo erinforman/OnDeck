@@ -1,8 +1,8 @@
 # summary
 
 Via is the travel app that turns wanderlust into action.
-* Save travel recommendations and resources
-* Create a bucket list travel map
+* Save travel recommendations and resources.
+* Create a bucket list travel map.
 * Plan custom itineraries.
 
 ![Via Homepage](/static/images/README/home.png)
@@ -24,15 +24,14 @@ Create custom itineraries with the Google Distance Matrix API. With an algorithm
 ![4](/static/images/README/4.png)
 
 
-<img src="/static/images/README/5.png" align="center" width="400">
-<img src="/static/images/README/6.png" align="center" width="400">
-<img src="/static/images/README/7.png" align="center" width="400">
-<img src="/static/images/README/8.png" align="center" width="400">
+<div align="center" <img src="/static/images/README/5.png" width="600"></div>
+<img src="/static/images/README/6.png" align="center" width="600">
+<img src="/static/images/README/7.png" align="center" width="600">
+<img src="/static/images/README/8.png" align="center" width="600">
 
 Helpful error handling to progress the user forward.
 
 Manage all locations.
-
 
 
 ***
