@@ -102,11 +102,6 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
             db.session.add(new_attraction)
             db.session.commit()
 
-            # flash(f'Exact location match! {business_name} at {formatted_address} added to map.')
-
-    # else:
-    #     flash(f'{business_name} is already on your map.')
-
 
 def search_business_name(place_id):
     """Call to places API to retrieve human-readable name for the returned 
