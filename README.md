@@ -10,12 +10,12 @@ Via is the travel app that turns wanderlust into action.
 
 # features
 
-Generate a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
+<strong>Generate</strong> a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
 
 ![3](/static/images/README/3.png)
 ![1](/static/images/README/1.png)
 
-Include a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
+<strong>Populate</strong> a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
 
 ![2](/static/images/README/2.png)
 
@@ -25,15 +25,15 @@ Include a photo and article hyperlink in the info window using the Beautiful Sou
 <p align="center"><img src="/static/images/README/6.png" width="700"></p>
 <p align="center"><img src="/static/images/README/7.png" width="700"></p>
 
-Share an itinerary via e-mail using the SendGrid API. 
+<strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
 
-<p align="center"><img src="/static/images/README/9.png" width="400">  <img src="/static/images/README/10.png" width="400"></p>
+<p align="center"><img src="/static/images/README/9.png" width="400">  <img src="/static/images/README/10.png" width="500" height="300"></p>
 
-Helpful error handling to progress the user forward.
+<strong>Helpful error handling</strong> to progress the user forward.
 
-<p align="center"><img src="/static/images/README/11.png" width="400">  <img src="/static/images/README/12.png" width="400"></p>
+<p align="center"><img src="/static/images/README/11.png" width="400">  <img src="/static/images/README/12.png" width="500" height="300"></p>
 
-Manage all locations.
+<strong>Manage</strong> all locations.
 
 
 ***
