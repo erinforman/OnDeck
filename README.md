@@ -14,8 +14,7 @@ Using the Google Geocoding API, generate a latitude and longitude for urls for t
 
 ![1](/static/images/README/1.png) ![3](/static/images/README/3.png) ![2](/static/images/README/2.png)  
 
-<>
-<img src="/static/images/README/2.png" width="200"/>
+<img src="/static/images/README/3.png" width="400"/><img src="/static/images/README/1.png" width="400"/><img src="/static/images/README/2.png" width="400"/>
 
 ***
 
