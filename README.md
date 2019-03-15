@@ -27,11 +27,11 @@ Via is the travel app that turns wanderlust into action.
 
 <strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
 
-<p align="center"><img src="/static/images/README/9.png" width="400">  <img src="/static/images/README/10.png" width="500" height="300"></p>
+<p align="center"><img src="/static/images/README/9.png" width="500">  <img src="/static/images/README/10.png" width="500"></p>
 
 <strong>Helpful error handling</strong> to progress the user forward.
 
-<p align="center"><img src="/static/images/README/11.png" width="400">  <img src="/static/images/README/12.png" width="500" height="300"></p>
+<p align="center"><img src="/static/images/README/11.png" width="500" height="300">  <img src="/static/images/README/12.png" width="500" height="300"></p>
 
 <strong>Manage</strong> all locations.
 
