@@ -66,7 +66,7 @@ Erin's inspiration for this app came from wanting to solve 3 problems:
 2. Effortlessly creating itineraries that take the most efficient route between destinations.
 3. Sharing itineraries and resources with friends.
 
-Plus, this app is <i>basically</i> scientifically proven to increase happiness. What a Great Trip! And I’m Not Even There Yet - NYT](https://www.nytimes.com/2014/05/11/travel/what-a-great-trip-and-im-not-even-there-yet.html).
+This app is <i>basically</i> scientifically proven to increase happiness: [What a Great Trip! And I’m Not Even There Yet - NYT](https://www.nytimes.com/2014/05/11/travel/what-a-great-trip-and-im-not-even-there-yet.html).
 
 
 Connect on LinkedIn [here](https://www.linkedin.com/in/formanerin/).
