@@ -7,8 +7,9 @@ Via is the travel app that turns wanderlust into action.
 
 ![Via Homepage](/static/images/README/home.png)
 
-<p align="center"><img src="/static/images/README/1_live.gif" width="325">  <img src="/static/images/README/2_live.gif" width="325"></p>
-
+<!-- <p align="center"><img src="/static/images/README/1_live.gif" width="325">  <img src="/static/images/README/2_live.gif" width="325"></p>
+ -->
+ <p align="center"><img src="/static/images/README/1_live.gif" style="max-width:50%;">  <img src="/static/images/README/2_live.gif" style="max-width:50%;"></p>
 ***
 
 # features
