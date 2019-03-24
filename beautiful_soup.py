@@ -1,15 +1,20 @@
+"""Beautiful Soup functions to scrape article xml."""
+
 import requests
 from bs4 import BeautifulSoup
-# from urllib.request import urlopen
+
 
 headers = {'User-Agent':'Mozilla/5.0'}
 
-# url = "https://www.nytimes.com/2017/11/20/t-magazine/travel/cap-ferret-guide.html"
 
 def beautiful_soup(url):
+    """Get xml of article
+    
+    e.g. Parameter:
+    url = "https://www.nytimes.com/2017/11/20/t-magazine/travel/cap-ferret-guide.html" 
+    """
 
     try:
-        # bs_url_open = BeautifulSoup(urlopen(url),features="html.parser")
         page = requests.get(url)
         soup = BeautifulSoup(page.text, "html.parser")
     except:
@@ -20,6 +25,7 @@ def beautiful_soup(url):
 ##############################################################################
 
 def search_url_image(url, soup):
+    """Get image for article"""
 
     try:
         metatag_img = soup.find("meta", {"property": "og:image"})
@@ -30,6 +36,7 @@ def search_url_image(url, soup):
         return url_image
 
 def search_url_title(url, soup):
+    """Get title for article"""
 
     try:
         metatag_title = soup.find("meta", {"property": "og:title"})
@@ -40,6 +47,7 @@ def search_url_title(url, soup):
         return url_title
 
 def search_url_head_title(url, soup):
+    """Get alt title for article"""
 
     try:
         """Result: <title> UKAHT - Visiting Port Lockroy</title> """
@@ -51,6 +59,7 @@ def search_url_head_title(url, soup):
         return url_head_title
 
 def search_url_author(url, soup):
+    """Get author for article"""
 
     try:
         metatag_author = soup.find("meta", {"property": "article:author"})
@@ -61,6 +70,7 @@ def search_url_author(url, soup):
         return str(metatag_author)
 
 def search_url_site_name(url, soup):
+    """Get website name for article"""
 
     try:
         metatag_site_name = soup.find("meta", {"property": "og:site_name"})
@@ -71,6 +81,7 @@ def search_url_site_name(url, soup):
         return url_site_name
 
 def search_url_twitter(url, soup):
+    """Get alt website name for article"""
 
     try:
         metatag_twitter = soup.find("meta", {"name": "twitter:domain"})
