@@ -1,79 +1,54 @@
 {% extends 'base.html' %}
-
-
 {% block title %}Via{% endblock %}
-
 {% block content %}
 
 <body id="mappage">
-<div class="container-fluid mapform">
-
-<div class="row no-gutter">
-<div class="col-1">
-
-      <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-      Search
-      </button>
-
-</div>
-
-
-<div class="col">
-<div class="collapse" id="collapseExample">
- <form id="map_form" action="/map/{{ user.user_id }}" method="post">
-  <div class="form-row">
-    <div class="col-4">
-      
-      <input type="text" class="form-control" placeholder="Travel Blog, Restaurant Review, City Feature (url)" name="url" id="url" style="font-family: Open Sans;"required>
-      
-    </div>
-    <div class="col-3">
-      <input type="text" class="form-control" placeholder="City, Landmark (optional)" name="helper_search_terms" id="helper_search_terms" style="font-family: Open Sans;">
-    </div>
-    <div class="col-3">
-      <input type="text" class="form-control" placeholder="Recommended By (optional)" name="recommended_by" id="recommended_by" style="font-family: Open Sans;">
-    </div>
-    <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
-     <div class="col-2">       
-        <button id="submit" type="submit" class="btn btn-secondary">Let's go!</button>
-    </div>
-  </div>
-</form>
-            <!-- </p> -->
-        <!-- </form> -->
-  </div>
-</div>
+  <div class="container-fluid mapform">
+    <div class="row no-gutter">
+      <div class="col-1">
+        <button type="button" class="btn btn-outline-secondary" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+          Search
+        </button>
+      </div>
+      <div class="col">
+        <div class="collapse" id="collapseExample">
+          <form id="map_form" action="/map/{{ user.user_id }}" method="post">
+            <div class="form-row">
+              <div class="col-4">
+                <input type="text" class="form-control" placeholder="Travel Blog, Restaurant Review, City Feature (url)" name="url" id="url" style="font-family: Open Sans;"required>
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" placeholder="City, Landmark (optional)" name="helper_search_terms" id="helper_search_terms" style="font-family: Open Sans;">
+              </div>
+              <div class="col-3">
+                <input type="text" class="form-control" placeholder="Recommended By (optional)" name="recommended_by" id="recommended_by" style="font-family: Open Sans;">
+              </div>
+              <input type="hidden" name= "user_id" id="user_id" value="{{ user.user_id }}">
+              <div class="col-2">       
+                <button id="submit" type="submit" class="btn btn-secondary">Let's go!</button>
+              </div>
+            </div>
+          </form>
         </div>
-        
+      </div>
+    </div>
 
-    
+    <!-- Google Map -->
+    <style>
+    #map {
+      height: 600px;  
+      width: 100%;   
+    }
+  </style>
+  <div id="map" ></div>
 
-<!-- <div class="col-9">
- -->   
-
-        <style>
-          #map {
-             height: 600px;  
-             width: 100%;   
-          }
-        </style>
-
-    <div id='map' ></div>
-
-    
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <script src="/static/js/map.js"></script>
-    <script async defer
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="/static/js/map.js"></script>
+  <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_KEY }}&callback=initMap">
-    </script>
-  <!--   </div> -->
-
-    <!-- </div> -->
-
+  </script>
 </div>
-
 </body>
-
 {% endblock %}
 
 
