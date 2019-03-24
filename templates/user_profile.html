@@ -1,58 +1,50 @@
 {% extends 'base.html' %}
-
 {% block title %}Manage Places{% endblock %}
-
 {% block content %}
-<body id="profilepage">
-<div class="container-fluid profileform">
-    
-        <form action="/user-profile/{{ user_id }}" method="post">
 
+<body id="profilepage">
+    <div class="container-fluid profileform">
+        <form action="/user-profile/{{ user_id }}" method="post">
             <br>
             <div class="row">
-            {% for location in result %}
-            <div class="col-4">
-            
-                <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}">
-                {{ location['business_name'] }}
-                <br><br>
-                {% if location['url_img'] %}
-                    <img class="profile_img" id = "profile_img" src="{{ location['url_img'] }}"><br><br>
-                {% endif %}
-                
-                <ul style="list-style-type:square;">
-                    <p>
-                {% if location['recommended_by'] %}
-                    Recommended by <img src="https://img.icons8.com/android/24/000000/sort-up.png"> {{ location['recommended_by'] }}<br>
-                {% endif %}
-                <li><p>{{ location['formatted_address'] }}
-                {% if location['url_title'] or location['url'] %}
-                    <br><a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
-                {% endif %}
-                </p></li>
-                </p>
-                
-<!--                 {% if location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter']  %}
-                    -  {{ location['url_site_name'] or location['url_head_title'] or location['url_author'] or location['url_twitter'] }}
-                {% endif %} -->
-                
-                </ul>
-                 
-                <br>
+                {% for location in result %}
+                <div class="col-4">
+                    <input type="checkbox" name="check_list" value="{{ location['attraction_id'] }}">
+                    {{ location['business_name'] }}
+                    <br>
+                    <br>
+                    {% if location['url_img'] %}
+                    <img class="profile_img" id = "profile_img" src="{{ location['url_img'] }}">
+                    <br>
+                    <br>
+                    {% endif %}
+                    <ul style="list-style-type:square;">
+                        <p>
+                            {% if location['recommended_by'] %}
+                            Recommended by <img src="https://img.icons8.com/android/24/000000/sort-up.png"> {{ location['recommended_by'] }}
+                            <br>
+                            {% endif %}
+                            <li>
+                                <p>{{ location['formatted_address'] }}
+                                    {% if location['url_title'] or location['url'] %}
+                                    <br>
+                                    <a href="{{ location['url'] }}">{{ location['url_title'] or location['url'] }}</a>
+                                    {% endif %}
+                                </p>
+                            </li>
+                        </p>
+                    </ul>
+                    <br>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-
-              <br>
-              <br>
+            <br>
+            <br>
             <input type="submit" value = "Delete Locations (select all that apply)">
-
             <br>
         </form>
-
     </div>
-    </body>
-
+</body>
 {% endblock %}
 
 
