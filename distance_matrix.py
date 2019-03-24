@@ -1,3 +1,5 @@
+"""Functions to create itineraries from saved locations"""
+
 import googlemaps, os, pprint
 from model import connect_to_db, db, User, Location, Attraction, Trip
 from collections import namedtuple
@@ -12,9 +14,7 @@ attrc_1 = aliased(Attraction)
 attrc_2 = aliased(Attraction)
 
 def write_distance_matrix_db(user_id, units='imperial'):
-
-    """Retrieve all of a users location pairs for which there is
-    not a trip logged"""
+    """Get origin/destination pairs where trips don't already exist"""
   
     trips_leg_a = db.session.query(Location.place_id.label('origin_place_id'), 
         Location.lat.label('origin_lat'),
@@ -43,7 +43,6 @@ def write_distance_matrix_db(user_id, units='imperial'):
 
     trips = trips_leg_b.union(trips_leg_a).all()
 
-    #TODO: check if new trips get added when new origins are added (ie another row for coit and santa cruz when santa cruz is added)
     new_trips = []
 
     for trip in trips:
@@ -62,6 +61,7 @@ def write_distance_matrix_db(user_id, units='imperial'):
                             destination_coords = (trip.dest_lat + ',' + trip.dest_lng), 
                             duration = duration_sec))
 
+    """Save new trips to db"""
     if new_trips:
 
         db.session.add_all(new_trips)          
@@ -69,11 +69,16 @@ def write_distance_matrix_db(user_id, units='imperial'):
 
 
 def get_next_trip(user_id, origin_place_id, excluded_destinations):
-
-    """A trip means to travel between two points: an origin and a destination.
-    An itinerary is made up of one or more trips."""
-
-    #Given a user id and origin, find how far away (in seconds) the closest destination is
+    """
+    Get the closest saved location to an origin
+    - A trip means to travel between two points: an origin and a destination.
+    - An itinerary is made up of one or more trips.
+    - Returns None if 
+        - the only destination options are excluded destinations or 
+        - there are no trips because you can't drive from the origin to any 
+        other user location (e.g. Zermatt (car-less city), a single location on 
+        Maui)
+    """
 
     try:
         next_trip =  db.session.query(
@@ -115,17 +120,13 @@ def get_next_trip(user_id, origin_place_id, excluded_destinations):
     else:
         return next_trip
 
-    #This will be None if the only destination options are excluded destinations or there
-    # are no trips because you can't drive from the origin to any other user location 
-    # (e.g. Zermatt (car-less city), a single location on Maui)
 
 def create_itinerary(user_id, origin_place_id, duration):
+    """
+    Given a place_id for an origin and a duration in seconds, return an 
+    itinerary that takes up as much of the duration as possible.
+    """
 
-    """
-    given a place_id for an origin and a length of time
-    in seconds, return an itinerary that takes up the
-    given length of time
-    """
     Itinerary = namedtuple('Itinerary',['itinerary_seq', 'itinerary_details', 
         'duration', 'time_left', 'time_spent'])
  
@@ -133,38 +134,44 @@ def create_itinerary(user_id, origin_place_id, duration):
     itinerary_details = []
     excluded_destinations = set()
 
-    #Keep track of duration requested and time left separately
+    """Keep track of duration requested and time left separately"""
     time_left = duration
     next_trip = get_next_trip(user_id, origin_place_id, excluded_destinations)
 
 
-    #If the time it takes to get from an origin to the nearest location exceeds the duration of the itinerary, stop adding to 
-    # the itinerary and return it. If the only destination options are no_repeats, stop adding to the intinerary and call it done.
-
+    """
+    If the time it takes to get from an origin to the nearest location 
+    exceeds the duration of the itinerary, stop adding to 
+    the itinerary and return it. If the only destination options are no_repeats, 
+    stop adding to the intinerary and call it done.
+    """
     if next_trip == None:
-        #return(itinerary_seq, duration, time_left, duration-time_left)
         return('no_trips', next_trip)
 
+    """Not enough time to get to closest saved location"""
     if next_trip.duration > time_left:
-        # return((f'BLAAAAAAAH ***** itinerary of one: {origin_place_id}'))
         return('need_more_time',next_trip,duration)
 
+    """
+    Add to itinerary until next destination would exceed time allotted 
+    to trip
+    """
     while next_trip.duration <= time_left:
 
-        #Add origin to no repeats set
+        """Add origin to no repeats set"""
         excluded_destinations.add(next_trip.origin_place_id)
 
-        #Add trip to itineary                                     
+        """Add trip to itineary"""                                     
         itinerary_seq.append(next_trip.trip_id)
         itinerary_details.append(next_trip)
 
-        #Subtract trip duration from time_left
+        """Subtract trip duration from time_left"""
         time_left -= next_trip.duration
 
-        #Set trip destination as new trip origin
+        """Set trip destination as new trip origin"""
         origin_place_id = next_trip.destination_place_id
 
-        #Calculate time to next nearest location
+        """Calculate time to next nearest location"""
         next_trip = get_next_trip(user_id, origin_place_id, excluded_destinations)
 
         if not next_trip:

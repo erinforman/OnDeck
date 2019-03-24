@@ -37,53 +37,5 @@ class TestLocationSearch(unittest.TestCase):
                 'types': ['locality', 'political']}, match_type='exact')
             )
 
-
-    # def test_no_rsvp_yet(self):
-    #     result = self.client.get("/")
-    #     self.assertIn(b"Please RSVP", result.data)
-    #     self.assertNotIn(b"Party Details", result.data)
-
-    # def test_rsvp(self):
-    #     result = self.client.post("/rsvp",
-    #                               data={'name': "Jane", 'email': "jane@jane.com"},
-    #                               follow_redirects=True)
-    #     self.assertIn(b"Yay!", result.data)
-    #     self.assertIn(b"Party Details", result.data)
-    #     self.assertNotIn(b"Please RSVP", result.data)
-
-
-
-# class PartyTestsDatabase(unittest.TestCase):
-#     """Flask tests that use the database."""
-
-#     def setUp(self):
-#         """Stuff to do before every test."""
-
-#         # Get the Flask test client
-#         self.client = app.test_client()
-
-#         # Show Flask errors that happen during tests
-#         app.config['TESTING'] = True
-
-#         # Connect to test database
-#         connect_to_db(app, "postgresql:///testdb")
-
-#         # Create tables and add sample data
-#         db.create_all()
-#         example_data()
-
-#     def tearDown(self):
-#         """Do at end of every test."""
-
-#         db.session.close()
-#         db.drop_all()
-
-#     def test_games(self):
-#         """Test departments page."""
-
-#         result = self.client.get("/games")
-#         self.assertIn(b"Power Grid", result.data)
-
-
 if __name__ == "__main__":
     unittest.main()
