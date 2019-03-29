@@ -1,4 +1,4 @@
-# summary
+# Via
 
 Via is the travel app that turns wanderlust into action.
 * Save travel recommendations and resources.
@@ -6,36 +6,6 @@ Via is the travel app that turns wanderlust into action.
 * Plan custom itineraries.
 
 ![Via Homepage](/static/images/README/1_live_home.gif)
-
-***
-
-# features
-
-<strong>Generate</strong> a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
-
-![Via Article](/static/images/README/3_live_santa_fe.gif)
-
-<strong>Populate</strong> a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
-
-![3](/static/images/README/3.png)
-![1](/static/images/README/1.png)
-![2](/static/images/README/2.png)
-
-<strong>Create</strong> custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
-
-![Via Itinerary 1](/static/images/README/3_live_itinerary_1.gif)
-
-<strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
-
-<p align="center"><img src="/static/images/README/9.png" width="400">  <img src="/static/images/README/10.png" width="400"></p>
-
-<strong>Helpful error handling</strong> to progress the user forward.
-
-![Via Itinerary 2](/static/images/README/5_live_itinerary_1.gif)
-
-<strong>Manage</strong> all locations.
-
-![13](/static/images/README/13.png)
 
 ***
 
@@ -71,3 +41,34 @@ This app is <i>basically</i> scientifically proven to increase happiness: [What 
 
 
 Connect on LinkedIn [here](https://www.linkedin.com/in/formanerin/).
+
+***
+
+# features
+
+<strong>Generate</strong> a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
+
+![Via Article](/static/images/README/3_live_santa_fe.gif)
+
+<strong>Populate</strong> a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
+
+![3](/static/images/README/3.png)
+![1](/static/images/README/1.png)
+![2](/static/images/README/2.png)
+
+<strong>Create</strong> custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
+
+![Via Itinerary 1](/static/images/README/3_live_itinerary_1.gif)
+
+<strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
+
+<p align="center"><img src="/static/images/README/9.png" width="400">  <img src="/static/images/README/10.png" width="400"></p>
+
+<strong>Helpful error handling</strong> to progress the user forward.
+
+![Via Itinerary 2](/static/images/README/5_live_itinerary_1.gif)
+
+<strong>Manage</strong> all locations.
+
+![13](/static/images/README/13.png)
+
