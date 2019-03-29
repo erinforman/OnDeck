@@ -58,7 +58,7 @@ Connect on LinkedIn [here](https://www.linkedin.com/in/formanerin/).
 
 <strong>Create</strong> custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
 
-![Via Itinerary 1](/static/images/README/3_live_itinerary_1.gif)
+![Via Itinerary 1](/static/images/README/4_live_itinerary_1.gif)
 
 <strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
 
