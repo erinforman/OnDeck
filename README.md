@@ -5,24 +5,21 @@ Via is the travel app that turns wanderlust into action.
 * Create a bucket list travel map.
 * Plan custom itineraries.
 
-<!-- ![Via Homepage](/static/images/README/home.png) -->
 ![Via Homepage](/static/images/README/1_live_home.gif)
 
-<!-- <p align="center"><img src="/static/images/README/1_live_home.gif" width="325">  <img src="/static/images/README/2_live.gif" width="325"></p>
- -->
 ***
 
 # features
 
 <strong>Generate</strong> a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
 
-<p align="center"><img src="/static/images/README/3_live.gif"> </p>
-
-![3](/static/images/README/3.png)
-![1](/static/images/README/1.png)
+<!-- <p align="center"><img src="/static/images/README/3_live.gif"> </p> -->
+![Via Homepage](/static/images/README/3_live_santa_fe.gif)
 
 <strong>Populate</strong> a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
 
+![3](/static/images/README/3.png)
+![1](/static/images/README/1.png)
 ![2](/static/images/README/2.png)
 
 <strong>Create</strong> custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
