@@ -1,3 +1,5 @@
+"""Functions to geocode urls and save locations and articles to db"""
+
 import googlemaps, os, re, datetime
 from collections import namedtuple
 from model import connect_to_db, db, User, Location, Attraction

@@ -5,10 +5,11 @@ Via is the travel app that turns wanderlust into action.
 * Create a bucket list travel map.
 * Plan custom itineraries.
 
-![Via Homepage](/static/images/README/home.png)
+<!-- ![Via Homepage](/static/images/README/home.png) -->
+![Via Homepage](/static/images/README/1_live_home.gif)
 
-<p align="center"><img src="/static/images/README/1_live.gif" width="325">  <img src="/static/images/README/2_live.gif" width="325"></p>
-
+<!-- <p align="center"><img src="/static/images/README/1_live_home.gif" width="325">  <img src="/static/images/README/2_live.gif" width="325"></p>
+ -->
 ***
 
 # features

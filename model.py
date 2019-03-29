@@ -1,4 +1,5 @@
 """Models and database functions"""
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
