@@ -2,10 +2,7 @@
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
-
 from model import User, connect_to_db, db
-
-#TODO: PULL FROM EXISTING DB AND ADD TO SEED BEFORE DROPPING AND RE-SEEDING
 
 def create_db():
 

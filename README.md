@@ -13,7 +13,6 @@ Via is the travel app that turns wanderlust into action.
 
 <strong>Generate</strong> a latitude and longitude for urls for travel destinations, like travel blogs, city features in magazines, and restaurant websites, using the Google Geocoding API. Save destinations to a postgres database via SQLAlchemy, which the Google Maps API uses to generate individual markers.
 
-<!-- <p align="center"><img src="/static/images/README/3_live.gif"> </p> -->
 ![Via Article](/static/images/README/3_live_santa_fe.gif)
 
 <strong>Populate</strong> a photo and article hyperlink in the info window using the Beautiful Soup library in Python to scrape xml.
@@ -24,13 +23,7 @@ Via is the travel app that turns wanderlust into action.
 
 <strong>Create</strong> custom itineraries with the Google Distance Matrix API. With an algorithm based on the Traveling Salesman Problem, Via creates an efficient trip itinerary from saved destinations
 
-<!-- <p align="center"><img src="/static/images/README/4_live.gif"> </p> -->
 ![Via Itinerary 1](/static/images/README/3_live_itinerary_1.gif)
-
-<!-- <p align="center"><img src="/static/images/README/4.png" width="700"></p>
-<p align="center"><img src="/static/images/README/5.png" width="700"></p>
-<p align="center"><img src="/static/images/README/6.png" width="700"></p>
-<p align="center"><img src="/static/images/README/7.png" width="700"></p> -->
 
 <strong>Share</strong> an itinerary via e-mail using the SendGrid API. 
 

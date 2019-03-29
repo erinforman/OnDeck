@@ -1,6 +1,8 @@
 """Functions to create itineraries from saved locations"""
 
-import googlemaps, os, pprint
+import googlemaps
+import os
+import pprint
 from model import connect_to_db, db, User, Location, Attraction, Trip
 from collections import namedtuple
 from sqlalchemy.sql import func

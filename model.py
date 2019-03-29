@@ -36,7 +36,8 @@ class Location(db.Model):
 
     __tablename__ = "locations" #dim
 
-    place_id = db.Column(db.String(64), primary_key=True) #corresponds to place_id in google API
+    #place_id corresponds to place_id in google API
+    place_id = db.Column(db.String(64), primary_key=True) 
     formatted_address = db.Column(db.String(200), nullable=False)
     business_name = db.Column(db.String(200), nullable=True)
     lat = db.Column(db.String, nullable=False) #geometry location
@@ -46,7 +47,8 @@ class Location(db.Model):
 
     def __repr__(self):
 
-        return f"<Location place_id={self.place_id} formatted_address={self.formatted_address} \
+        return f"<Location place_id={self.place_id} \
+                formatted_address={self.formatted_address} \
                 lat={self.lat} lng={self.lng}>"
 
 
@@ -68,15 +70,17 @@ class Attraction(db.Model):
     url_site_name = db.Column(db.String(200), nullable=True)
     url_twitter = db.Column(db.String(200), nullable=True)
 
-    user = db.relationship("User", backref=db.backref("attractions", order_by=attraction_id))
-    location = db.relationship("Location", backref=db.backref("attractions", order_by=attraction_id)) 
+    user = db.relationship("User", backref=db.backref("attractions", 
+        order_by=attraction_id))
+    location = db.relationship("Location", backref=db.backref("attractions", 
+        order_by=attraction_id)) 
 
 
     def __repr__(self):
 
-        return f"<Attraction attraction_id={self.attraction_id} user_id={self.user_id} \
-        place_id={self.place_id} url={self.url} recommended_by={self.recommended_by} \
-        date_stamp={self.date_stamp}>"
+        return f"<Attraction attraction_id={self.attraction_id} \
+        user_id={self.user_id} place_id={self.place_id} url={self.url} \
+        recommended_by={self.recommended_by} date_stamp={self.date_stamp}>"
 
 
     def example_data_attraction():
@@ -94,23 +98,23 @@ class Attraction(db.Model):
 class Trip(db.Model):
     """Distances between Locations assigned to attractions on website."""
 
-    __tablename__ = "trips" #dim
+    __tablename__ = "trips" #
 
     trip_id = db.Column(db.Integer, autoincrement=True, primary_key=True) 
     origin_place_id = db.Column(db.String(64), db.ForeignKey('locations.place_id'))
     origin_coords = db.Column(db.String(64))
-    destination_place_id = db.Column(db.String(64)) #, db.ForeignKey('locations.place_id'))
+    destination_place_id = db.Column(db.String(64)) 
     destination_coords = db.Column(db.String(64))
     duration = db.Column(db.Integer)
 
-
-
-
     def __repr__(self):
 
-        return f"<Trip trip_id={self.trip_id} origin_place_id={self.origin_place_id} \
-                 origin_coords={self.origin_coords} destination_place_id={self.destination_place_id} \
-                 destination_coords={self.destination_coords} duration={self.duration}>"
+        return f"<Trip trip_id={self.trip_id} \
+            origin_place_id={self.origin_place_id} \
+            origin_coords={self.origin_coords} \
+            destination_place_id={self.destination_place_id} \
+            destination_coords={self.destination_coords} \
+            duration={self.duration}>"
 
 ##############################################################################
 # Helper functions

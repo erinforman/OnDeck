@@ -8,10 +8,10 @@ headers = {'User-Agent':'Mozilla/5.0'}
 
 
 def beautiful_soup(url):
-    """Get xml of article
-    
+    """
+    Get xml of article.
     e.g. Parameter:
-    url = "https://www.nytimes.com/2017/11/20/t-magazine/travel/cap-ferret-guide.html" 
+    url = "www.nytimes.com/2017/11/20/t-magazine/travel/cap-ferret-guide.html" 
     """
 
     try:

@@ -1,18 +1,23 @@
 """Functions to geocode urls and save locations and articles to db"""
 
-import googlemaps, os, re, datetime
+import googlemaps
+import os
+import re
+import datetime
 from collections import namedtuple
 from model import connect_to_db, db, User, Location, Attraction
 from flask import flash
 from distance_matrix import write_distance_matrix_db
-from beautiful_soup import beautiful_soup, search_url_image, search_url_title, search_url_head_title, search_url_author, search_url_site_name, search_url_twitter
+from beautiful_soup import (beautiful_soup, search_url_image, search_url_title, 
+    search_url_head_title, search_url_author, search_url_site_name, 
+    search_url_twitter)
 
 gmaps = googlemaps.Client(os.environ.get('GOOGLE_KEY'))
 Search = namedtuple('Search',['location', 'match_type'])
 
 
 def search_url(url, helper_search_terms=''):
-    """find a location for the raw url submission"""
+    """find a lat and lng for the raw url submission"""
 
     location = gmaps.geocode(address=f'{helper_search_terms} {url}')
 
@@ -23,7 +28,7 @@ def search_url(url, helper_search_terms=''):
 
 
 def search_cleaned_url(url, helper_search_terms=''):
-    """find a location for the cleaned url submission"""
+    """find a lat and lng for the cleaned url submission"""
 
     cleaned_url = re.sub('[^a-zA-Z0-9]+', ' ', url) #Matches non-alphanumeric
 
@@ -38,13 +43,17 @@ def search_cleaned_url(url, helper_search_terms=''):
 
     if len(location) == 0:
         return Search(location, 'no match')
-    elif len(location) == 1: #includes location[0].get('partial_match'):
+    elif len(location) == 1: 
         return Search(location[0], 'exact')
     elif len(location) > 1:
         return Search(location, 'multi_match')
         
 
 def location_for_exact_match(location_result):
+    """
+    if a single lat and lng can be matched to a url, get additional
+    location details.
+    """
 
     place_id = location_result['place_id']
     formatted_address = location_result['formatted_address']
@@ -56,6 +65,10 @@ def location_for_exact_match(location_result):
 
 
 def add_exact_match(location_result, user_id, url, recommended_by=''):
+    """
+    if a single lat and lng can be matched to a url, save location 
+    details to database, save attraction details to database.
+    """
 
     place_id,formatted_address,lat,lng,business_name = location_for_exact_match(location_result)
 
@@ -106,13 +119,16 @@ def add_exact_match(location_result, user_id, url, recommended_by=''):
 
 
 def search_business_name(place_id):
-    """Call to places API to retrieve human-readable name for the returned 
-    result. This is usually the canonical business name."""
+    """
+    Call to places API to get human-readable name for the returned 
+    result. This is usually the canonical business name.
+    """
 
     place = gmaps.place(place_id, fields=['name'])
     return place['result']['name']
 
 def delete_attraction(attraction_id):
+    """Delete an attraction. Levered in user profile route to manage places."""
 
     attraction = Attraction.query.get(attraction_id)
 
