@@ -23,6 +23,7 @@ Via is the travel app that turns wanderlust into action.
 * Google Maps
 * Google Geocoding
 * Google Places
+* Google Distance Matrix
 * SendGrid
 
 (dependencies are listed in requirements.txt)
