@@ -315,6 +315,14 @@ function initMap() {
   });
 }
 
+//Disabling distance matrix
+//TODO: Add flag to enable/disable to mitigate Distance Matrix API calls
+     // $.get('/calculate_trips', () => { 
+     // }); 
+//      google.maps.event.addListenerOnce(map, 'idle', function(){  
+//     jQuery('.gm-style-iw').prev('div').remove(); 
+// });  
+
 function bindInfoWindow(marker, map, infoWindow, html) {
   google.maps.event.addListener(marker, 'click', () => {
     infoWindow.close();
